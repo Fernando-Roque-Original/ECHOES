@@ -2,12 +2,16 @@ import type { Locale } from '../i18n';
 
 const odsCopy = {
   'pt-BR': {
+    fourLabel: 'ODS 4',
+    nineLabel: 'ODS 9',
     ariaLabel:
       'ODS 4, educação de qualidade; ODS 9, indústria, inovação e infraestrutura',
     four: 'Educação de qualidade',
     nine: 'Indústria, inovação e infraestrutura',
   },
   en: {
+    fourLabel: 'SDG 4',
+    nineLabel: 'SDG 9',
     ariaLabel:
       'SDG 4, quality education; SDG 9, industry, innovation and infrastructure',
     four: 'Quality education',
@@ -38,7 +42,7 @@ export function OdsBadges({
           aria-hidden="true"
         />
         <span>
-          <strong>ODS 4</strong>
+          <strong>{copy.fourLabel}</strong>
           <small>{copy.four}</small>
         </span>
       </span>
@@ -51,7 +55,7 @@ export function OdsBadges({
           aria-hidden="true"
         />
         <span>
-          <strong>ODS 9</strong>
+          <strong>{copy.nineLabel}</strong>
           <small>{copy.nine}</small>
         </span>
       </span>

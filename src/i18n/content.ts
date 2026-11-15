@@ -323,6 +323,7 @@ const legacyFactsEn: LegacyFact[] = [
 ];
 
 const marsQuizPt: Quiz = {
+  hypothesisLabel: 'Hipótese científica',
   answersLabel: 'Respostas',
   idleFeedback: 'Escolha uma pista.',
   correctFeedback:
@@ -347,6 +348,7 @@ const marsQuizPt: Quiz = {
 };
 
 const marsQuizEn: Quiz = {
+  hypothesisLabel: 'Scientific hypothesis',
   answersLabel: 'Answers',
   idleFeedback: 'Choose a clue.',
   correctFeedback:
@@ -371,6 +373,7 @@ const marsQuizEn: Quiz = {
 };
 
 const moonQuizPt: Quiz = {
+  hypothesisLabel: 'Hipótese científica',
   answersLabel: 'Respostas',
   idleFeedback: 'Escolha uma pista.',
   correctFeedback:
@@ -395,6 +398,7 @@ const moonQuizPt: Quiz = {
 };
 
 const moonQuizEn: Quiz = {
+  hypothesisLabel: 'Scientific hypothesis',
   answersLabel: 'Answers',
   idleFeedback: 'Choose a clue.',
   correctFeedback:

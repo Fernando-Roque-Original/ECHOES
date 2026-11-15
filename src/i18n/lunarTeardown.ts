@@ -24,6 +24,15 @@ export type LunarModuleTeardownCopy = {
   diagramDescription: string;
   kicker: string;
   intro: string;
+  viewer: {
+    modeLabel: string;
+    model3d: string;
+    diagram: string;
+    loading: string;
+    fallback: string;
+    scrollMode: string;
+    modelCredit: string;
+  };
   chips: {
     didactic: string;
     assemblies: string;
@@ -57,6 +66,16 @@ export const lunarModuleTeardownCopy: Record<
     kicker: 'Apollo 11 · LM-5',
     intro:
       'O Eagle era um veículo em dois estágios. Explore os conjuntos que tornavam possível descer, pousar e voltar à órbita lunar.',
+    viewer: {
+      modeLabel: 'Modo de visualização do Eagle',
+      model3d: 'Modelo 3D NASA',
+      diagram: 'Esquema didático',
+      loading: 'Carregando modelo NASA…',
+      fallback:
+        'O modelo 3D não carregou. O esquema didático continua disponível.',
+      scrollMode: 'A rotação acompanha a leitura científica',
+      modelCredit: 'Modelo NASA · sem separação mecânica real',
+    },
     chips: {
       didactic: 'Vista didática',
       assemblies: '5 conjuntos',
@@ -144,6 +163,16 @@ export const lunarModuleTeardownCopy: Record<
     kicker: 'Apollo 11 · LM-5',
     intro:
       'Eagle was a two-stage vehicle. Explore the assemblies that made it possible to descend, land, and return to lunar orbit.',
+    viewer: {
+      modeLabel: 'Eagle viewing mode',
+      model3d: 'NASA 3D model',
+      diagram: 'Didactic schematic',
+      loading: 'Loading NASA model…',
+      fallback:
+        'The 3D model did not load. The didactic schematic remains available.',
+      scrollMode: 'Rotation follows the scientific reading',
+      modelCredit: 'NASA model · no real mechanical separation',
+    },
     chips: {
       didactic: 'Didactic view',
       assemblies: '5 assemblies',

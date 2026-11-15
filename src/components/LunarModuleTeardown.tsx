@@ -1,4 +1,9 @@
-import { ArrowUpRight, Layers, ScanLine } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Box,
+  Layers,
+  ScanLine,
+} from 'lucide-react';
 import {
   useId,
   useMemo,
@@ -10,6 +15,7 @@ import {
   type LunarModulePartId,
 } from '../i18n/lunarTeardown';
 import type { Locale } from '../i18n/types';
+import { LunarModuleViewer } from './LunarModuleViewer';
 
 type LunarModuleTeardownProps = {
   reducedMotion: boolean;
@@ -252,9 +258,11 @@ export default function LunarModuleTeardown({
   const rawId = useId();
   const uid = rawId.replace(/:/g, '');
   const copy = getLunarModuleTeardownCopy(locale);
+  const scrollDriven = progress !== undefined;
   const explosion = reducedMotion
     ? 0.58
     : clampProgress(progress ?? 0.58);
+  const [viewMode, setViewMode] = useState<'3d' | 'diagram'>('3d');
   const [selectedId, setSelectedId] =
     useState<LunarModulePartId | null>(null);
   const guidedPart = useMemo(() => {
@@ -282,6 +290,7 @@ export default function LunarModuleTeardown({
     <section
       className={[
         'lunar-teardown',
+        scrollDriven ? 'is-scroll-driven' : '',
         active ? 'is-active' : '',
         reducedMotion ? 'is-reduced-motion' : '',
         className ?? '',
@@ -310,18 +319,63 @@ export default function LunarModuleTeardown({
 
       <div className="lunar-workbench">
         <div className="lunar-stage">
-          <LunarExplodedDiagram
-            selectedId={selectedPart.id}
-            reducedMotion={reducedMotion}
-            titleId={`${uid}-diagram-title`}
-            descriptionId={`${uid}-diagram-description`}
-            title={copy.diagramAriaLabel}
-            description={copy.diagramDescription}
-          />
+          <div
+            className="lunar-stage__mode"
+            role="group"
+            aria-label={copy.viewer.modeLabel}
+          >
+            <button
+              type="button"
+              className={viewMode === '3d' ? 'is-active' : ''}
+              aria-pressed={viewMode === '3d'}
+              onClick={() => setViewMode('3d')}
+            >
+              <Box aria-hidden="true" size={14} />
+              {copy.viewer.model3d}
+            </button>
+            <button
+              type="button"
+              className={viewMode === 'diagram' ? 'is-active' : ''}
+              aria-pressed={viewMode === 'diagram'}
+              onClick={() => setViewMode('diagram')}
+            >
+              <ScanLine aria-hidden="true" size={14} />
+              {copy.viewer.diagram}
+            </button>
+          </div>
+
+          {viewMode === '3d' && active ? (
+            <LunarModuleViewer
+              active={active}
+              reducedMotion={reducedMotion}
+              scrollDriven={scrollDriven}
+              progress={explosion}
+              loadingLabel={copy.viewer.loading}
+              fallbackLabel={copy.viewer.fallback}
+            />
+          ) : (
+            <LunarExplodedDiagram
+              selectedId={selectedPart.id}
+              reducedMotion={reducedMotion}
+              titleId={`${uid}-diagram-title`}
+              descriptionId={`${uid}-diagram-description`}
+              title={copy.diagramAriaLabel}
+              description={copy.diagramDescription}
+            />
+          )}
           <div className="lunar-stage__readout" aria-hidden="true">
-            <span>LM-5 / EAGLE</span>
+            <span>
+              LM-5 / {viewMode === '3d' ? 'NASA GLB' : 'EAGLE'}
+            </span>
             <span>{String(selectedIndex + 1).padStart(2, '0')} / 05</span>
           </div>
+          <p className="lunar-stage__credit" aria-hidden="true">
+            {viewMode === '3d'
+              ? scrollDriven
+                ? copy.viewer.scrollMode
+                : copy.viewer.modelCredit
+              : copy.diagramDescription}
+          </p>
           <div className="lunar-stage__scale" aria-hidden="true">
             <span>ASSEMBLED</span>
             <i />

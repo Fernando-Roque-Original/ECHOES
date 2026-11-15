@@ -1,51 +1,51 @@
 import { ExternalLink, MousePointer2, Radio, Telescope } from 'lucide-react';
 import { nasaUrls } from '../content/missions';
+import type { Locale } from '../i18n';
+import { getUiCopy } from '../i18n/ui';
 import { useExperienceStore } from '../state/experienceStore';
 import { BigButton } from './BigButton';
 import { Modal } from './Modal';
 
-export function SilentWorldNotice() {
+export function SilentWorldNotice({ locale = 'en' }: { locale?: Locale }) {
   const code = useExperienceStore((state) => state.silentWorldCode);
   const close = useExperienceStore((state) => state.closeSilentWorld);
+  const copy = getUiCopy(locale).notices;
 
   return (
     <Modal
       open={Boolean(code)}
       onClose={close}
-      eyebrow="Arquivo orbital · sinal interrompido"
-      title="Este mundo ainda está em silêncio."
+      eyebrow={copy.silent.eyebrow}
+      title={copy.silent.title}
+      closeLabel={copy.close}
     >
       <div className="silent-world-hero">
         <span aria-hidden="true">?</span>
         <p>
-          O registro <strong>{code ?? 'ARQ'}</strong> existe no mapa, mas ainda
-          não tem uma história publicada neste museu.
+          {copy.silent.recordLead} <strong>{code ?? 'ARQ'}</strong>{' '}
+          {copy.silent.recordBody}
         </p>
       </div>
       <div className="silent-world-facts">
         <span>
           <Radio aria-hidden="true" />
-          <strong>Sem transmissão</strong>
-          <small>história em pesquisa</small>
+          <strong>{copy.silent.noSignal}</strong>
+          <small>{copy.silent.inResearch}</small>
         </span>
         <span>
           <Telescope aria-hidden="true" />
-          <strong>Catálogo NASA</strong>
-          <small>dados disponíveis para uma próxima etapa</small>
+          <strong>{copy.silent.nasaCatalog}</strong>
+          <small>{copy.silent.catalogDetail}</small>
         </span>
       </div>
-      <p className="modal-copy">
-        O NSSDCA reúne o catálogo público de espaçonaves, instrumentos e
-        destinos da NASA. Um ponto no mapa não é uma história inventada: é um
-        convite para pesquisar mais.
-      </p>
+      <p className="modal-copy">{copy.silent.body}</p>
       <a
         className="source-link-strong"
         href={nasaUrls.nssdca}
         target="_blank"
         rel="noreferrer"
       >
-        Abrir o catálogo NSSDCA
+        {copy.silent.source}
         <ExternalLink aria-hidden="true" size={16} />
       </a>
       <div className="modal-actions">
@@ -53,10 +53,9 @@ export function SilentWorldNotice() {
           icon={<MousePointer2 aria-hidden="true" size={18} />}
           onClick={close}
         >
-          Voltar ao Sistema Solar
+          {copy.silent.back}
         </BigButton>
       </div>
     </Modal>
   );
 }
-

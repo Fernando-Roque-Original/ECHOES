@@ -770,6 +770,7 @@ export default function RoverTeardown({
     <section
       className={[
         'rover-teardown',
+        scrollDriven ? 'is-scroll-driven' : '',
         tourRunning ? 'is-touring' : '',
         reducedMotion ? 'is-reduced-motion' : '',
         className ?? '',

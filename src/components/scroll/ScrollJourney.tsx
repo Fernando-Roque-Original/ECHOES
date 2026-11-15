@@ -8,18 +8,33 @@ import {
 import type { Journey, JourneyBeat, Locale } from '../../i18n';
 import { getQuiz } from '../../i18n';
 import { useSectionProgress } from '../../experience/scrollProgress';
-import { solarSystemBodies } from '../../content/solarSystem';
+import {
+  getScienceLensContent,
+  getScienceLensState,
+} from '../../content/scienceLens';
 import LunarModuleTeardown from '../LunarModuleTeardown';
 import { PlanetPortrait } from '../PlanetPortrait';
 import RoverTeardown from '../RoverTeardown';
+import { PlanetErrorBoundary } from '../../scenes/PlanetErrorBoundary';
 import { MoonGlobe } from './MoonGlobe';
+import { PlanetGlobe } from './PlanetGlobe';
+import { ScienceLens } from './ScienceLens';
 import { WorldQuiz } from './WorldQuiz';
 
 export const DEFAULT_JOURNEY_BEAT_SPAN = 1;
 export const TEARDOWN_JOURNEY_BEAT_SPAN = 2.4;
 
-const marsBody = solarSystemBodies.find((body) => body.id === 'mars');
-const moonBody = solarSystemBodies.find((body) => body.id === 'moon');
+const MARS_GLOBE = {
+  texture: '/assets/maps/mars-viking-mdim-color-2k.jpg',
+  normalMap: '/assets/maps/mars-viking-mdim-normal-1k.jpg',
+  roughnessMap: '/assets/maps/mars-viking-mdim-roughness-1k.jpg',
+  tint: '#d56f45',
+} as const;
+
+const MOON_GLOBE = {
+  texture: '/assets/planets/moon-solarsystemscope.jpg',
+  tint: '#cfd2cd',
+} as const;
 
 export type JourneyBeatRange = {
   index: number;
@@ -172,16 +187,50 @@ export function ScrollJourney({
         />
         <div className="cine-journey__grid" aria-hidden="true" />
 
-        {journey.world === 'moon' ? (
-          <div className="cine-moon-maquette" aria-hidden="true">
-            <MoonGlobe
-              progress={progress}
-              active
-              reducedMotion={reducedMotion}
-            />
-            <span className="cine-moon-maquette__rim" />
-          </div>
-        ) : null}
+        <div
+          className={`cine-planet-maquette is-${journey.world}`}
+          aria-hidden="true"
+        >
+          <PlanetErrorBoundary
+            fallback={
+              <PlanetPortrait
+                texture={
+                  journey.world === 'mars'
+                    ? MARS_GLOBE.texture
+                    : MOON_GLOBE.texture
+                }
+                tint={
+                  journey.world === 'mars'
+                    ? MARS_GLOBE.tint
+                    : MOON_GLOBE.tint
+                }
+                className="cine-planet-maquette__fallback"
+                reducedMotion={reducedMotion}
+                quality="hero"
+              />
+            }
+          >
+            {journey.world === 'mars' ? (
+              <PlanetGlobe
+                texturePath={MARS_GLOBE.texture}
+                normalMapPath={MARS_GLOBE.normalMap}
+                roughnessMapPath={MARS_GLOBE.roughnessMap}
+                initialRotation={[0.08, -0.72, 0.04]}
+                autoRotationSpeed={0.045}
+                progress={progress}
+                active
+                reducedMotion={reducedMotion}
+              />
+            ) : (
+              <MoonGlobe
+                progress={progress}
+                active
+                reducedMotion={reducedMotion}
+              />
+            )}
+          </PlanetErrorBoundary>
+          <span className="cine-planet-maquette__rim" />
+        </div>
 
         <button className="cine-back" type="button" onClick={onExit}>
           <ArrowLeft aria-hidden="true" size={22} />
@@ -199,17 +248,21 @@ export function ScrollJourney({
           const isQuiz = beat.id === 'question';
           const isTeardown = isTeardownVisual(beat.visual);
           const isLunarTeardown = beat.visual === 'lunar-teardown';
-          const portraitBody =
-            beat.visual === 'mars'
-              ? marsBody
-              : beat.visual === 'moon'
-                ? moonBody
-                : undefined;
           const range = beatLayout.ranges[index];
           const localProgress = getJourneyBeatProgress(
             progress,
             range,
           );
+          const scienceState = isTeardown
+            ? getScienceLensState(
+                journey.world,
+                localProgress,
+                locale,
+              )
+            : null;
+          const scienceLensContent = isTeardown
+            ? getScienceLensContent(journey.world, locale)
+            : null;
           const lift = Math.sin(localProgress * Math.PI);
           const kickerReveal = smoothstep(0.01, 0.16, localProgress);
           const titleReveal = smoothstep(0.04, 0.28, localProgress);
@@ -240,6 +293,13 @@ export function ScrollJourney({
             '--visual-scale': 0.965 + visualReveal * 0.035,
             '--visual-blur': `${(1 - visualReveal) * 12}px`,
             '--orbit-rotation': `${-16 + localProgress * 32}deg`,
+            '--science-zoom': scienceState?.zoom ?? 1,
+            '--science-focus-x': `${
+              scienceState?.phase.focal.x ?? 50
+            }%`,
+            '--science-focus-y': `${
+              scienceState?.phase.focal.y ?? 50
+            }%`,
           } as CSSProperties;
           return (
             <article
@@ -295,26 +355,19 @@ export function ScrollJourney({
                     alt={beat.imageAlt ?? ''}
                     draggable={false}
                   />
-                ) : portraitBody ? (
-                  journey.world === 'moon' &&
-                  beat.visual === 'moon' ? (
-                    <span
-                      className="cine-beat__moon-anchor"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <PlanetPortrait
-                      texture={portraitBody.texture}
-                      tint={portraitBody.tint}
-                      className="cine-beat__planet-portrait"
-                      animate={active && !reducedMotion}
-                      reducedMotion={reducedMotion}
-                      quality="hero"
-                    />
-                  )
                 ) : (
-                  <span className="cine-beat__sphere" aria-hidden="true" />
+                  <span
+                    className="cine-beat__planet-anchor"
+                    aria-hidden="true"
+                  />
                 )}
+                {scienceState && scienceLensContent ? (
+                  <ScienceLens
+                    content={scienceLensContent}
+                    state={scienceState}
+                    total={scienceLensContent.phases.length}
+                  />
+                ) : null}
                 {beat.credit ? (
                   <p className="cine-beat__credit">{beat.credit}</p>
                 ) : null}

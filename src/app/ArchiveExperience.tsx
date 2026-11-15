@@ -1,7 +1,19 @@
 import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LanguageControl } from '../components/LanguageControl';
 import { OdsBadges } from '../components/OdsBadges';
 import { SourcesPanel } from '../components/SourcesPanel';
-import { journeys, type JourneyBeat } from '../experience/journey';
+import type { JourneyBeat } from '../experience/journey';
+import {
+  getExperienceContent,
+  getLegacyFacts,
+  type Locale,
+} from '../i18n';
+import {
+  applyLocalePreference,
+  readInitialLocale,
+} from '../i18n/locale';
+import { getUiCopy } from '../i18n/ui';
 import { useExperienceStore } from '../state/experienceStore';
 
 function ArchiveBeat({ beat }: { beat: JourneyBeat }) {
@@ -24,68 +36,76 @@ function ArchiveBeat({ beat }: { beat: JourneyBeat }) {
 }
 
 export function ArchiveExperience() {
+  const [locale, setLocale] = useState<Locale>(readInitialLocale);
   const openSources = useExperienceStore((state) => state.openSources);
-  const marsBeats = journeys.mars.beats.filter((beat) => beat.id !== 'question');
-  const moonBeats = journeys.moon.beats;
+  const content = getExperienceContent(locale);
+  const copy = getUiCopy(locale);
+  const legacyFacts = getLegacyFacts(locale);
+  const marsBeats = content.journeys.mars.beats.filter(
+    (beat) => beat.id !== 'question',
+  );
+  const moonBeats = content.journeys.moon.beats;
+
+  useEffect(() => {
+    applyLocalePreference(locale);
+  }, [locale]);
 
   return (
     <div className="archive-app">
       <a className="skip-link" href="#archive-main">
-        Pular para o conteúdo
+        {copy.archive.skipToContent}
       </a>
       <header className="archive-header">
-        <a className="cine-wordmark" href="/">
-          <span aria-hidden="true" />
+        <a className="cine-wordmark" href="/" aria-label="ECHOES">
           ECHOES
         </a>
-        <nav aria-label="Ações do modo arquivo">
+        <nav aria-label={copy.archive.navLabel}>
+          <LanguageControl
+            locale={locale}
+            onChange={setLocale}
+            copy={content.header.language}
+            className="archive-language"
+          />
           <button type="button" onClick={openSources}>
-            Fontes
+            {copy.archive.sources}
           </button>
           <a href="/">
             <ArrowLeft aria-hidden="true" size={18} />
-            Experiência interativa
+            <span>{copy.archive.interactive}</span>
           </a>
         </nav>
       </header>
 
       <main id="archive-main" className="archive-main">
         <section className="archive-hero" aria-labelledby="archive-title">
-          <p className="cine-kicker">Modo arquivo · leitura linear</p>
-          <h1 id="archive-title">
-            O sinal termina.
-            <br />
-            A luz continua.
-          </h1>
-          <p>
-            O ECHOES transforma o arquivo científico da NASA em uma
-            experiência que crianças de escolas públicas podem explorar. Esta é
-            a versão de leitura completa, sem WebGL e sem movimento automático.
-          </p>
+          <p className="cine-kicker">{copy.archive.kicker}</p>
+          <h1 id="archive-title">{copy.archive.title}</h1>
+          <p>{copy.archive.intro}</p>
         </section>
 
         <section className="archive-world" aria-labelledby="archive-mars">
-          <p className="cine-kicker">Marte · Opportunity</p>
-          <h2 id="archive-mars">Jornada de Marte</h2>
-          <p className="archive-lede">{journeys.mars.introduction}</p>
+          <p className="cine-kicker">{copy.archive.marsKicker}</p>
+          <h2 id="archive-mars">{copy.archive.marsTitle}</h2>
+          <p className="archive-lede">
+            {content.journeys.mars.introduction}
+          </p>
           <div className="archive-beats">
             {marsBeats.map((beat) => (
               <ArchiveBeat beat={beat} key={beat.id} />
             ))}
           </div>
           <aside className="archive-quiz">
-            <strong>O que o Opportunity encontrou em Marte?</strong>
-            <p>
-              Evidências de ambientes antigos com água. Os minerais encontrados
-              ajudaram a contar a história de um Marte mais úmido.
-            </p>
+            <strong>{copy.archive.marsQuizTitle}</strong>
+            <p>{copy.archive.marsQuizBody}</p>
           </aside>
         </section>
 
         <section className="archive-world" aria-labelledby="archive-moon">
-          <p className="cine-kicker">Lua · Apollo</p>
-          <h2 id="archive-moon">Jornada da Lua</h2>
-          <p className="archive-lede">{journeys.moon.introduction}</p>
+          <p className="cine-kicker">{copy.archive.moonKicker}</p>
+          <h2 id="archive-moon">{copy.archive.moonTitle}</h2>
+          <p className="archive-lede">
+            {content.journeys.moon.introduction}
+          </p>
           <div className="archive-beats">
             {moonBeats.map((beat) => (
               <ArchiveBeat beat={beat} key={beat.id} />
@@ -94,43 +114,32 @@ export function ArchiveExperience() {
         </section>
 
         <section className="archive-legacy" aria-labelledby="archive-legacy-title">
-          <p className="cine-kicker">O legado</p>
-          <h2 id="archive-legacy-title">
-            A missão terminou. A descoberta ficou.
-          </h2>
+          <p className="cine-kicker">{copy.archive.legacyKicker}</p>
+          <h2 id="archive-legacy-title">{copy.archive.legacyTitle}</h2>
           <dl>
-            <div>
-              <dt>90 dias</dt>
-              <dd>planejados</dd>
-            </div>
-            <div>
-              <dt>14 anos</dt>
-              <dd>explorando</dd>
-            </div>
-            <div>
-              <dt>45,16 km</dt>
-              <dd>percorridos</dd>
-            </div>
+            {legacyFacts.map((fact) => (
+              <div key={fact.value}>
+                <dt>{fact.value}</dt>
+                <dd>{fact.label}</dd>
+              </div>
+            ))}
           </dl>
           <p className="archive-signature">
-            O sinal termina. <strong>A luz continua.</strong>
+            {copy.archive.signatureLead}{' '}
+            <strong>{copy.archive.signatureEmphasis}</strong>
           </p>
         </section>
 
         <footer className="archive-footer">
-          <p>
-            Fatos, imagens e modelos: NASA/JPL-Caltech, Cornell, ASU e USGS.
-            Texturas do Sistema Solar: Solar System Scope, CC BY 4.0. Via
-            Láctea: ESO/S. Brunier, CC BY 4.0.
-          </p>
+          <p>{copy.archive.footer}</p>
           <button type="button" onClick={openSources}>
-            Ver todas as fontes
+            {copy.archive.allSources}
             <ExternalLink aria-hidden="true" size={16} />
           </button>
         </footer>
       </main>
-      <OdsBadges locale="pt-BR" />
-      <SourcesPanel />
+      <OdsBadges locale={locale} className="archive-ods" />
+      <SourcesPanel locale={locale} />
     </div>
   );
 }

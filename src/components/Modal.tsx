@@ -9,6 +9,7 @@ type ModalProps = {
   children: ReactNode;
   wide?: boolean;
   className?: string;
+  closeLabel?: string;
 };
 
 export function Modal({
@@ -19,6 +20,7 @@ export function Modal({
   children,
   wide = false,
   className = '',
+  closeLabel = 'Close',
 }: ModalProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<HTMLElement | null>(null);
@@ -61,7 +63,7 @@ export function Modal({
             className="icon-button"
             type="button"
             onClick={onClose}
-            aria-label="Fechar"
+            aria-label={closeLabel}
           >
             <X aria-hidden="true" />
           </button>

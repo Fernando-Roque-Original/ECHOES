@@ -1,7 +1,6 @@
 import {
   Accessibility,
   BookOpenText,
-  Languages,
   Radio,
   Settings2,
 } from 'lucide-react';
@@ -14,6 +13,7 @@ import {
   useState,
 } from 'react';
 import { ExperienceStage } from '../components/ExperienceStage';
+import { LanguageControl } from '../components/LanguageControl';
 import { OdsBadges } from '../components/OdsBadges';
 import { OrbitSelector } from '../components/OrbitSelector';
 import { SettingsPanel } from '../components/SettingsPanel';
@@ -30,32 +30,19 @@ import {
 import { useSectionProgress } from '../experience/scrollProgress';
 import {
   getExperienceContent,
-  locales,
   type Locale,
 } from '../i18n';
+import {
+  applyLocalePreference,
+  readInitialLocale,
+} from '../i18n/locale';
 import { useExperienceStore } from '../state/experienceStore';
 import type { World } from './queryState';
 
-const LOCALE_STORAGE_KEY = 'after-the-signal-locale';
 const WORLD_TEXTURE: Record<World, string> = {
   mars: '/assets/maps/mars-texture-nasa.jpg',
   moon: '/assets/planets/moon-solarsystemscope.jpg',
 };
-
-function readInitialLocale(): Locale {
-  if (typeof window === 'undefined') return 'pt-BR';
-
-  try {
-    const storedLocale = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-    if (storedLocale === 'pt-BR' || storedLocale === 'en') {
-      return storedLocale;
-    }
-  } catch {
-    // Storage can be unavailable in privacy modes; the default still works.
-  }
-
-  return 'pt-BR';
-}
 
 function scrollToSection(id: string, reducedMotion: boolean) {
   const element = document.getElementById(id);
@@ -196,9 +183,15 @@ export function ScrollExperience({
   );
 
   useEffect(() => {
+    const blockArrivalScroll = (event: Event) => {
+      if (orbitArrival) event.preventDefault();
+    };
     const registerIntent = () => {
-      if (ignition.phase !== 'pending') return;
-      beginOrbitArrival(false);
+      if (ignition.phase !== 'pending' || arrivalStartedRef.current) {
+        return false;
+      }
+      beginOrbitArrival(true);
+      return true;
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
@@ -208,30 +201,31 @@ export function ScrollExperience({
       ) {
         return;
       }
-      registerIntent();
+      if (registerIntent() || orbitArrival) event.preventDefault();
     };
     const handleWheel = (event: WheelEvent) => {
       if (event.deltaY <= 0 || !isScrollIntentTarget(event.target)) return;
-      registerIntent();
+      if (registerIntent() || orbitArrival) event.preventDefault();
+    };
+    const handleTouchMove = (event: TouchEvent) => {
+      if (!isScrollIntentTarget(event.target)) return;
+      if (registerIntent() || orbitArrival) event.preventDefault();
     };
 
-    window.addEventListener('wheel', handleWheel, { passive: true });
-    window.addEventListener('touchmove', registerIntent, { passive: true });
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('scroll', blockArrivalScroll, { passive: false });
     return () => {
       window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchmove', registerIntent);
+      window.removeEventListener('touchmove', handleTouchMove);
       window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('scroll', blockArrivalScroll);
     };
-  }, [beginOrbitArrival, ignition.phase]);
+  }, [beginOrbitArrival, ignition.phase, orbitArrival]);
 
   useEffect(() => {
-    document.documentElement.lang = locale;
-    try {
-      window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-    } catch {
-      // Persisting the preference is optional.
-    }
+    applyLocalePreference(locale);
   }, [locale]);
 
   useEffect(
@@ -302,6 +296,7 @@ export function ScrollExperience({
     if (scrollTimer.current) window.clearTimeout(scrollTimer.current);
     if (diveTimer.current) window.clearTimeout(diveTimer.current);
     if (arrivalTimer.current) window.clearTimeout(arrivalTimer.current);
+    arrivalStartedRef.current = false;
     setOrbitArrival(false);
     setWorld(null);
     setFocus(null);
@@ -352,10 +347,6 @@ export function ScrollExperience({
           aria-label={copy.header.team}
           onClick={() => scrollToSection('ignicao', reducedMotion)}
         >
-          <span
-            className="cine-wordmark__signal"
-            aria-hidden="true"
-          />
           <span className="cine-wordmark__product">
             {copy.header.team}
           </span>
@@ -367,25 +358,11 @@ export function ScrollExperience({
         </div>
 
         <nav className="cine-header__nav" aria-label={copy.header.navLabel}>
-          <div
-            className="cine-language"
-            role="group"
-            aria-label={copy.header.language.ariaLabel}
-          >
-            <Languages aria-hidden="true" size={17} />
-            {locales.map((option) => (
-              <button
-                className="cine-language__button"
-                type="button"
-                key={option}
-                aria-pressed={locale === option}
-                aria-label={`${copy.header.language.label}: ${copy.header.language.options[option]}`}
-                onClick={() => setLocale(option)}
-              >
-                {copy.header.language.options[option]}
-              </button>
-            ))}
-          </div>
+          <LanguageControl
+            locale={locale}
+            onChange={setLocale}
+            copy={copy.header.language}
+          />
           <button
             type="button"
             onClick={togglePreferences}
@@ -523,8 +500,8 @@ export function ScrollExperience({
         ) : null}
       </main>
 
-      <SettingsPanel />
-      <SourcesPanel />
+      <SettingsPanel locale={locale} />
+      <SourcesPanel locale={locale} />
 
       {entryWorld ? (
         <div

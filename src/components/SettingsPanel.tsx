@@ -8,9 +8,11 @@ import {
   Type,
   Waves,
 } from 'lucide-react';
+import type { Locale } from '../i18n';
+import { getUiCopy } from '../i18n/ui';
 import { useExperienceStore } from '../state/experienceStore';
 
-export function SettingsPanel() {
+export function SettingsPanel({ locale = 'en' }: { locale?: Locale }) {
   const open = useExperienceStore((state) => state.preferencesOpen);
   const audioEnabled = useExperienceStore((state) => state.audioEnabled);
   const subtitlesEnabled = useExperienceStore((state) => state.subtitlesEnabled);
@@ -22,6 +24,7 @@ export function SettingsPanel() {
   const toggleReducedMotion = useExperienceStore((state) => state.toggleReducedMotion);
   const toggleLargeText = useExperienceStore((state) => state.toggleLargeText);
   const openSources = useExperienceStore((state) => state.openSources);
+  const copy = getUiCopy(locale).settings;
 
   if (!open) return null;
 
@@ -29,14 +32,14 @@ export function SettingsPanel() {
     <section
       id="settings-panel"
       className="settings-panel"
-      aria-label="Ajustes de acessibilidade"
+      aria-label={copy.ariaLabel}
       role="dialog"
     >
       <div className="settings-panel__heading">
         <Settings2 aria-hidden="true" />
         <div>
-          <strong>Leitura e som</strong>
-          <span>Você controla a experiência.</span>
+          <strong>{copy.title}</strong>
+          <span>{copy.description}</span>
         </div>
       </div>
       <div className="settings-panel__grid">
@@ -52,8 +55,8 @@ export function SettingsPanel() {
             <Music2 aria-hidden="true" />
           )}
           <span>
-            <strong>Som</strong>
-            <small>{audioEnabled ? 'Ligado' : 'Desligado'}</small>
+            <strong>{copy.sound}</strong>
+            <small>{audioEnabled ? copy.soundOn : copy.soundOff}</small>
           </span>
         </button>
         <button
@@ -68,8 +71,10 @@ export function SettingsPanel() {
             <CaptionsOff aria-hidden="true" />
           )}
           <span>
-            <strong>Legendas</strong>
-            <small>{subtitlesEnabled ? 'Sempre visíveis' : 'Ocultas'}</small>
+            <strong>{copy.captions}</strong>
+            <small>
+              {subtitlesEnabled ? copy.captionsVisible : copy.captionsHidden}
+            </small>
           </span>
         </button>
         <button
@@ -80,8 +85,10 @@ export function SettingsPanel() {
         >
           <Waves aria-hidden="true" />
           <span>
-            <strong>Movimento</strong>
-            <small>{reducedMotion ? 'Reduzido' : 'Padrão'}</small>
+            <strong>{copy.motion}</strong>
+            <small>
+              {reducedMotion ? copy.motionReduced : copy.motionDefault}
+            </small>
           </span>
         </button>
         <button
@@ -92,8 +99,8 @@ export function SettingsPanel() {
         >
           <Type aria-hidden="true" />
           <span>
-            <strong>Texto</strong>
-            <small>{largeText ? 'Maior' : 'Padrão'}</small>
+            <strong>{copy.text}</strong>
+            <small>{largeText ? copy.textLarge : copy.textDefault}</small>
           </span>
         </button>
       </div>
@@ -103,16 +110,15 @@ export function SettingsPanel() {
         onClick={openSources}
       >
         <ExternalLink aria-hidden="true" />
-        O que é real aqui?
+        {copy.sourcesLink}
       </button>
       <button
         className="settings-panel__close"
         type="button"
         onClick={togglePreferences}
       >
-        Fechar ajustes
+        {copy.close}
       </button>
     </section>
   );
 }
-

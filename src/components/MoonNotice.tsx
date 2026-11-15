@@ -1,38 +1,39 @@
 import { ArrowRight, Moon } from 'lucide-react';
 import { nasaUrls } from '../content/missions';
+import type { Locale } from '../i18n';
+import { getUiCopy } from '../i18n/ui';
 import { useExperienceStore } from '../state/experienceStore';
 import { BigButton } from './BigButton';
 import { Modal } from './Modal';
 
-export function MoonNotice() {
+export function MoonNotice({ locale = 'en' }: { locale?: Locale }) {
   const open = useExperienceStore((state) => state.moonNoticeOpen);
   const close = useExperienceStore((state) => state.closeMoonNotice);
+  const copy = getUiCopy(locale).notices;
 
   return (
-    <Modal open={open} onClose={close} eyebrow="Próxima vitrine" title="A Lua está chegando.">
+    <Modal
+      open={open}
+      onClose={close}
+      eyebrow={copy.moon.eyebrow}
+      title={copy.moon.title}
+      closeLabel={copy.close}
+    >
       <div className="moon-notice">
         <Moon aria-hidden="true" />
-        <p>
-          O próximo objeto do museu será o estágio de descida do módulo lunar
-          Eagle, da Apollo 11. Ele ficou na Lua depois de levar astronautas à
-          superfície.
-        </p>
+        <p>{copy.moon.body}</p>
       </div>
-      <p className="modal-copy">
-        A história de Marte está completa. A nova história só entra quando todo
-        o conteúdo e as fontes estiverem prontos.
-      </p>
+      <p className="modal-copy">{copy.moon.detail}</p>
       <div className="modal-actions">
         <BigButton
           variant="secondary"
           onClick={() => window.open(nasaUrls.apolloNext, '_blank', 'noopener')}
         >
-          Ver fonte Apollo 11
+          {copy.moon.source}
           <ArrowRight aria-hidden="true" size={18} />
         </BigButton>
-        <BigButton onClick={close}>Voltar ao museu</BigButton>
+        <BigButton onClick={close}>{copy.moon.back}</BigButton>
       </div>
     </Modal>
   );
 }
-

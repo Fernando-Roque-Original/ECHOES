@@ -4095,6 +4095,105 @@
   }
 }
 
+/* Shared planet framing for both lunar and Mars journeys. */
+.cine-planet-maquette {
+  position: absolute;
+  top: 50%;
+  right: clamp(18px, 3.5vw, 72px);
+  z-index: 1;
+  width: min(49vw, 850px);
+  height: min(49vw, 850px);
+  pointer-events: none;
+  transform:
+    translate3d(
+      var(--atmosphere-x, 0),
+      calc(-50% + var(--atmosphere-y, 0)),
+      0
+    );
+  filter: drop-shadow(0 0 48px rgba(224, 218, 199, 0.12));
+  will-change: transform;
+}
+
+.cine-planet-maquette > :where(.planet-globe, .moon-globe) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cine-planet-maquette canvas {
+  border-radius: 50%;
+}
+
+.cine-planet-maquette__rim {
+  position: absolute;
+  inset: 8.5%;
+  border: 1px solid rgba(245, 236, 217, 0.18);
+  border-radius: 50%;
+  box-shadow:
+    inset -28px -20px 72px rgba(0, 0, 0, 0.5),
+    0 0 52px rgba(237, 227, 203, 0.09);
+  pointer-events: none;
+}
+
+.cine-planet-maquette__fallback {
+  position: absolute;
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.cine-planet-maquette.is-mars {
+  filter:
+    saturate(1.08)
+    drop-shadow(0 0 54px rgba(213, 111, 69, 0.2));
+}
+
+.cine-planet-maquette.is-mars .cine-planet-maquette__rim {
+  border-color: rgba(255, 181, 128, 0.22);
+  box-shadow:
+    inset -30px -24px 80px rgba(16, 4, 2, 0.58),
+    0 0 62px rgba(213, 81, 45, 0.16);
+}
+
+.cine-planet-maquette.is-moon .cine-planet-maquette__rim {
+  border-color: rgba(224, 230, 231, 0.2);
+}
+
+.cine-beat__planet-anchor {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+@media (max-width: 1100px) {
+  .cine-planet-maquette {
+    right: clamp(8px, 2vw, 30px);
+    width: min(53vw, 720px);
+    height: min(53vw, 720px);
+    opacity: 0.82;
+  }
+}
+
+@media (max-width: 760px) {
+  .cine-planet-maquette {
+    top: 45%;
+    right: -21vw;
+    width: min(94vw, 650px);
+    height: min(94vw, 650px);
+    opacity: 0.48;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cine-planet-maquette {
+    transform: translate3d(0, -50%, 0);
+    transition: none;
+  }
+}
+
 /* ECHOES black theme, scroll depth, and planet-entry handoff. */
 .cine-app,
 .archive-app {

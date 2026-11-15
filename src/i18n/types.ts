@@ -56,6 +56,7 @@ export type QuizAnswer = {
 };
 
 export type Quiz = {
+  hypothesisLabel: string;
   answersLabel: string;
   idleFeedback: string;
   correctFeedback: string;
