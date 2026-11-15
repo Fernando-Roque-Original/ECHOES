@@ -1,4 +1,4 @@
-# CODEX — IMPLEMENTAR O PROJETO “AFTER THE SIGNAL”
+ — IMPLEMENTAR O PROJETO “AFTER THE SIGNAL”
 
 > **Leia este arquivo inteiro antes de codar.** Este documento é uma especificação de implementação pronta para passar ao Codex. Não é uma solicitação de planejamento adicional: **implemente o aplicativo**, após o início oficial do hackathon, na medida das permissões do ambiente. Entregue a melhor fatia vertical funcionando, mesmo que alguns assets precisem de fallbacks honestos.
 >
