@@ -3752,6 +3752,129 @@ p {
   background: #000;
 }
 
+.schematic-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.97), rgba(0, 0, 0, 0.9));
+  scrollbar-color: rgba(242, 194, 107, 0.42) rgba(3, 10, 15, 0.32);
+  scrollbar-width: thin;
+}
+
+.schematic-overlay__panel {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+}
+
+.schematic-overlay .rover-schematic {
+  min-height: 100%;
+  padding: 10px 12px 12px;
+  pointer-events: auto;
+}
+
+.schematic-overlay .schematic-toolbar {
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.schematic-overlay .schematic-toolbar__intro p {
+  max-width: 36rem;
+  margin-top: 3px;
+  font-size: 0.72rem;
+  line-height: 1.34;
+}
+
+.schematic-overlay .schematic-control {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 0.68rem;
+}
+
+.schematic-overlay .schematic-separation {
+  grid-template-columns: minmax(145px, 0.27fr) minmax(0, 1fr);
+  column-gap: 12px;
+  margin-bottom: 8px;
+  padding: 4px 10px 3px;
+}
+
+.schematic-overlay .schematic-separation label {
+  font-size: 0.66rem;
+}
+
+.schematic-overlay .schematic-separation output {
+  font-size: 0.9rem;
+}
+
+.schematic-overlay .schematic-separation input[type='range'] {
+  min-height: 34px;
+}
+
+.schematic-overlay .schematic-tick-row {
+  margin-top: -10px;
+  font-size: 0.55rem;
+}
+
+.schematic-overlay .schematic-filters {
+  flex-wrap: nowrap;
+  margin-bottom: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.schematic-overlay .schematic-filters button {
+  min-height: 34px;
+  flex: 0 0 auto;
+  padding: 5px 10px;
+  font-size: 0.65rem;
+}
+
+.schematic-overlay .schematic-workbench {
+  min-height: clamp(230px, 35svh, 350px);
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 0.33fr);
+}
+
+.schematic-overlay .schematic-canvas {
+  height: clamp(260px, 39svh, 380px);
+}
+
+.schematic-overlay .schematic-detail {
+  max-height: clamp(260px, 39svh, 380px);
+  padding: 14px;
+}
+
+.schematic-overlay .schematic-detail h3 {
+  font-size: clamp(1.45rem, 2vw, 2rem);
+}
+
+.schematic-overlay .schematic-parts {
+  padding-top: 10px;
+}
+
+.schematic-overlay .schematic-parts button {
+  min-height: 36px;
+}
+
+.schematic-overlay.is-interactive,
+.schematic-overlay.is-interactive :where(
+  .rover-schematic,
+  .schematic-toolbar,
+  .schematic-separation,
+  .schematic-filters,
+  .schematic-workbench,
+  .schematic-canvas,
+  .schematic-part
+) {
+  pointer-events: auto;
+}
+
 .schematic-canvas {
   position: relative;
   display: flex;

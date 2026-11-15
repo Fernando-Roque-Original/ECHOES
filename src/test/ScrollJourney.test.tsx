@@ -211,4 +211,26 @@ describe('ScrollJourney teardown lifecycle', () => {
       10,
     );
   });
+
+  it('marks the active questionnaire and keeps its back control available', () => {
+    render(
+      <ScrollJourney
+        journey={journey}
+        locale="pt-BR"
+        reducedMotion={false}
+        onExit={vi.fn()}
+        onFinish={vi.fn()}
+      />,
+    );
+
+    const section = screen.getByRole('region', { name: 'Test journey' });
+    const question = screen.getByRole('heading', { name: 'Question' })
+      .closest('article');
+
+    expect(section).toHaveClass('cine-journey--quiz');
+    expect(question).toHaveClass('cine-beat--quiz', 'is-active');
+    expect(
+      screen.getByRole('button', { name: 'Back' }),
+    ).toBeInTheDocument();
+  });
 });

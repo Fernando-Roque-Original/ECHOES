@@ -189,4 +189,31 @@ describe('RoverTeardown integration safeguards', () => {
     });
     expect(document.body.style.overflow).toBe('');
   });
+
+  it('keeps the schematic interactive while it is visible', () => {
+    render(<RoverTeardown reducedMotion={false} progress={0.82} />);
+
+    const overlay = screen.getByTestId('schematic-overlay');
+    expect(overlay).not.toHaveAttribute('aria-hidden');
+    expect(overlay).not.toHaveAttribute('inert');
+    expect(overlay).toHaveStyle({ pointerEvents: 'auto' });
+
+    fireEvent.click(
+      within(overlay).getByRole('button', { name: 'Explodir' }),
+    );
+    expect(within(overlay).getByText('100%')).toBeInTheDocument();
+
+    const separation = within(overlay).getByRole('slider', {
+      name: /Separação das peças/,
+    });
+    fireEvent.change(separation, { target: { value: '73' } });
+    expect(within(overlay).getByText('73%')).toBeInTheDocument();
+
+    fireEvent.click(
+      within(overlay).getByRole('button', { name: 'Ver por dentro' }),
+    );
+    expect(overlay.querySelector('.rover-schematic')).toHaveClass(
+      'is-cutaway',
+    );
+  });
 });

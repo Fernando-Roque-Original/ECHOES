@@ -646,6 +646,9 @@ export default function RoverTeardown({
     : selectedId;
   const shouldMountModel = active || keepModelMounted;
   const isExploring = frozenProgress !== null;
+  const schematicVisible = Boolean(
+    scrollDriven && timeline && timeline.schematicOpacity >= 0.12,
+  );
 
   const selectedLayer = useMemo(
     () =>
@@ -836,6 +839,7 @@ export default function RoverTeardown({
         'rover-teardown',
         scrollDriven ? 'is-scroll-driven' : '',
         isExploring ? 'is-exploring' : '',
+        schematicVisible ? 'is-schematic-visible' : '',
         tourRunning ? 'is-touring' : '',
         reducedMotion ? 'is-reduced-motion' : '',
         className ?? '',
@@ -1034,34 +1038,22 @@ export default function RoverTeardown({
 
           {timeline ? (
             <div
-              aria-hidden="true"
-              inert
+              data-testid="schematic-overlay"
+              className={`schematic-overlay${
+                schematicVisible ? ' is-interactive' : ''
+              }`}
+              aria-hidden={schematicVisible ? undefined : true}
+              inert={schematicVisible ? undefined : true}
               style={{
-                position: 'absolute',
-                inset: 0,
-                zIndex: 4,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
                 opacity: scrollDriven ? timeline.schematicOpacity : 0,
-                background:
-                  'linear-gradient(180deg, rgba(0, 0, 0, 0.97), rgba(0, 0, 0, 0.9))',
-                pointerEvents: 'none',
+                pointerEvents: schematicVisible ? 'auto' : 'none',
                 transform: `scale(${0.985 + timeline.schematicOpacity * 0.015})`,
                 transition: reducedMotion
                   ? 'none'
                   : 'opacity 120ms linear, transform 180ms ease-out',
               }}
             >
-              <div
-                style={{
-                  width: '132%',
-                  flex: '0 0 auto',
-                  transform: 'scale(0.72)',
-                  transformOrigin: 'center',
-                }}
-              >
+              <div className="schematic-overlay__panel">
                 <RoverSchematic reducedMotion={reducedMotion} />
               </div>
             </div>

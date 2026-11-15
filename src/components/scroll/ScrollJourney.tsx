@@ -160,6 +160,7 @@ export function ScrollJourney({
   const activeRange = getJourneyBeatAtProgress(beatLayout, progress);
   const activeIndex = activeRange?.index ?? 0;
   const activeBeat = beats[activeIndex];
+  const isQuizBeatActive = activeBeat?.id === 'question';
   const style = {
     '--journey-span': Math.max(1, beatLayout.totalSpan),
     '--journey-progress': progress,
@@ -174,7 +175,9 @@ export function ScrollJourney({
     <section
       ref={sectionRef}
       id={`jornada-${journey.world}`}
-      className={`cine-journey cine-journey--${journey.world}`}
+      className={`cine-journey cine-journey--${journey.world}${
+        isQuizBeatActive ? ' cine-journey--quiz' : ''
+      }`}
       style={style}
       aria-label={journey.sectionLabel}
     >
@@ -305,7 +308,9 @@ export function ScrollJourney({
             <article
               className={`cine-beat${
                 isTeardown ? ' cine-beat--teardown' : ''
-              }${active ? ' is-active' : ''}`}
+              }${isQuiz ? ' cine-beat--quiz' : ''}${
+                active ? ' is-active' : ''
+              }`}
               key={beat.id}
               aria-hidden={active ? undefined : true}
               inert={active ? undefined : true}
