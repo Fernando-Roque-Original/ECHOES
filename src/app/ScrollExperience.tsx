@@ -95,6 +95,7 @@ export function ScrollExperience({
   const diveTimer = useRef<number | null>(null);
   const arrivalTimer = useRef<number | null>(null);
   const previousOrbitProgress = useRef(orbitProgress);
+  const arrivalStartedRef = useRef(false);
   const reducedMotion = useExperienceStore((state) => state.reducedMotion);
   const initialIgnition = reducedMotion || Boolean(initialWorld);
   const [ignition, dispatchIgnition] = useReducer(
@@ -165,9 +166,39 @@ export function ScrollExperience({
     return () => observer.disconnect();
   }, []);
 
+  const beginOrbitArrival = useCallback(
+    (scrollToOrbit: boolean) => {
+      if (arrivalStartedRef.current) return;
+      dispatchIgnition({ type: 'USER_INTENT' });
+
+      if (reducedMotion) {
+        if (scrollToOrbit) scrollToSection('orbita', true);
+        return;
+      }
+
+      arrivalStartedRef.current = true;
+      setOrbitArrival(true);
+      if (scrollTimer.current) window.clearTimeout(scrollTimer.current);
+      if (arrivalTimer.current) window.clearTimeout(arrivalTimer.current);
+
+      if (scrollToOrbit) {
+        scrollTimer.current = window.setTimeout(
+          () => scrollToSection('orbita', false),
+          150,
+        );
+      }
+      arrivalTimer.current = window.setTimeout(
+        () => setOrbitArrival(false),
+        1640,
+      );
+    },
+    [reducedMotion],
+  );
+
   useEffect(() => {
     const registerIntent = () => {
-      dispatchIgnition({ type: 'USER_INTENT' });
+      if (ignition.phase !== 'pending') return;
+      beginOrbitArrival(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
@@ -192,7 +223,7 @@ export function ScrollExperience({
       window.removeEventListener('touchmove', registerIntent);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [beginOrbitArrival, ignition.phase]);
 
   useEffect(() => {
     document.documentElement.lang = locale;
@@ -215,6 +246,7 @@ export function ScrollExperience({
   useEffect(() => {
     if (!reducedMotion || !orbitArrival) return;
     if (arrivalTimer.current) window.clearTimeout(arrivalTimer.current);
+    arrivalStartedRef.current = false;
     setOrbitArrival(false);
   }, [orbitArrival, reducedMotion]);
 
@@ -284,25 +316,7 @@ export function ScrollExperience({
 
   const startExperience = () => {
     if (orbitArrival) return;
-    dispatchIgnition({ type: 'USER_INTENT' });
-
-    if (reducedMotion) {
-      scrollToSection('orbita', true);
-      return;
-    }
-
-    setOrbitArrival(true);
-    if (scrollTimer.current) window.clearTimeout(scrollTimer.current);
-    if (arrivalTimer.current) window.clearTimeout(arrivalTimer.current);
-
-    scrollTimer.current = window.setTimeout(
-      () => scrollToSection('orbita', false),
-      150,
-    );
-    arrivalTimer.current = window.setTimeout(
-      () => setOrbitArrival(false),
-      1640,
-    );
+    beginOrbitArrival(true);
   };
 
   const handleSceneReady = useCallback((epoch: number) => {

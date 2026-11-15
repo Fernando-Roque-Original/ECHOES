@@ -21,3 +21,6 @@ l.includes(k))
 /ideia 2.mp4
 /after-the-signal-final.mp4
 /after-the-signal-legendas-ptbr.srt
+
+.vercel
+.env*
