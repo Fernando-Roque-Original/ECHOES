@@ -1,4 +1,4 @@
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright-core';
@@ -27,6 +27,10 @@ const defaultWorkDir = path.join(
   'video',
   '.cache',
   '.echos-reel-capture',
+);
+const cinematicIntroSource = await readFile(
+  path.join(scriptDir, 'cinematic-space-intro.js'),
+  'utf8',
 );
 
 const VISUAL_OVERRIDE_CSS = `
@@ -162,6 +166,7 @@ function parseArgs(argv) {
     skipCompose: false,
     inspect: false,
     preview: false,
+    withHighlight: false,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -173,6 +178,7 @@ function parseArgs(argv) {
     else if (token === '--skip-compose') args.skipCompose = true;
     else if (token === '--inspect') args.inspect = true;
     else if (token === '--preview') args.preview = true;
+    else if (token === '--with-highlight') args.withHighlight = true;
     else if (token === '--help' || token === '-h') {
       console.log(
         [
@@ -183,7 +189,8 @@ function parseArgs(argv) {
           '  --keep-work        Keep the full frame sequence and frames',
           '  --skip-compose     Capture frames only',
           '  --inspect          Save visual QA screenshots and exit',
-          '  --preview          Capture only the first 66 seconds',
+          '  --preview          Capture only the first 80 seconds',
+          '  --with-highlight   Also render the optional 30-second captioned cut',
         ].join('\n'),
       );
       process.exit(0);
@@ -256,7 +263,7 @@ async function installVisualRoutes(context, page) {
 
   await page.addInitScript((cssText) => {
     try {
-      localStorage.setItem('after-the-signal-locale', 'en');
+      localStorage.setItem('after-the-signal-locale', 'pt-BR');
     } catch {
       // Storage may be unavailable; the URL still uses the same page.
     }
@@ -358,14 +365,43 @@ async function clickElement(locator, { forceDom = false } = {}) {
 async function openWorld(page, world) {
   const card = page.locator(`.cine-world-card.is-${world}`);
   await card.waitFor({ state: 'visible', timeout: 10_000 });
-  await page.waitForFunction(
-    (selector) => {
-      const element = document.querySelector(selector);
+  const selector = `.cine-world-card.is-${world}`;
+  const isEnabled = () =>
+    page.evaluate((cardSelector) => {
+      const element = document.querySelector(cardSelector);
       return element instanceof HTMLButtonElement && !element.disabled;
-    },
-    `.cine-world-card.is-${world}`,
-    { timeout: 10_000 },
-  );
+    }, selector);
+
+  try {
+    await page.waitForFunction(
+      (cardSelector) => {
+        const element = document.querySelector(cardSelector);
+        return element instanceof HTMLButtonElement && !element.disabled;
+      },
+      selector,
+      { timeout: 4_000 },
+    );
+  } catch {
+    // Card interaction unlocks at 48% orbit progress. WebGL capture can
+    // occasionally lag the scroll sample just below that boundary.
+    await page.evaluate(() =>
+      window.scrollBy({
+        top: Math.max(140, window.innerHeight * 0.12),
+        behavior: 'instant',
+      }),
+    );
+    await page.waitForFunction(
+      (cardSelector) => {
+        const element = document.querySelector(cardSelector);
+        return element instanceof HTMLButtonElement && !element.disabled;
+      },
+      selector,
+      { timeout: 6_000 },
+    );
+  }
+  if (!(await isEnabled())) {
+    throw new Error(`World card remained locked: ${world}`);
+  }
   await card.hover({ force: true, timeout: 5_000 }).catch(() => {});
   await sleep(300);
   await card.evaluate((element) => element.click());
@@ -422,7 +458,7 @@ async function createContext(browser) {
     viewport: { width: VIDEO_WIDTH, height: VIDEO_HEIGHT },
     deviceScaleFactor: 1,
     colorScheme: 'dark',
-    locale: 'en-US',
+    locale: 'pt-BR',
     timezoneId: 'UTC',
     reducedMotion: 'no-preference',
   });
@@ -433,7 +469,7 @@ async function inspectVisuals({ baseUrl, workDir }) {
   const context = await createContext(browser);
   await context.addInitScript(() => {
     try {
-      localStorage.setItem('after-the-signal-locale', 'en');
+      localStorage.setItem('after-the-signal-locale', 'pt-BR');
     } catch {
       // Ignore storage restrictions.
     }
@@ -585,6 +621,10 @@ async function captureReel({ baseUrl, workDir, durationSeconds, preview }) {
   try {
     await page.goto(baseUrl, { waitUntil: 'networkidle' });
     await settle(page, 1_400);
+    await page.addScriptTag({ content: cinematicIntroSource });
+    await page.waitForFunction(() => Boolean(window.__echoesCinema), undefined, {
+      timeout: 5_000,
+    });
 
     await page.screencast.start({
       size: { width: VIDEO_WIDTH, height: VIDEO_HEIGHT },
@@ -633,24 +673,30 @@ async function captureReel({ baseUrl, workDir, durationSeconds, preview }) {
       );
     };
 
-    // 0-3 s: opening hold.
+    // 0-16.5 s: cinematic starfield, debris fly-through, and portal into
+    // the real ECHOES interface.
+    mark('cinematic-intro');
+    await page.evaluate(() => window.__echoesCinema.begin());
+    await at(16.5);
+
+    // 17-28 s: opening hold and ignition into orbit.
     mark('opening');
-    await at(3.0);
+    await at(17.0);
     await clickElement(page.locator('.cine-start'));
 
-    // 4-14 s: ignition resolves into the orbit, then a slow card reveal.
+    // 18-28 s: ignition resolves into the orbit, then a slow card reveal.
     mark('ignition');
-    await at(7.0);
+    await at(20.0);
     await smoothScrollSectionProgress(page, 'orbita', 0.18, 2_600);
     await smoothScrollSectionProgress(page, 'orbita', 0.31, 2_400);
-    await smoothScrollSectionProgress(page, 'orbita', 0.46, 2_600);
+    await smoothScrollSectionProgress(page, 'orbita', 0.56, 2_600);
 
-    // 14.5-51.5 s: Mars, including the black-background teardown.
+    // 27.5-64.5 s: Mars, including the black-background teardown.
     mark('open-mars');
-    await at(14.5);
+    await at(27.5);
     await openWorld(page, 'mars');
     await sleep(2_000);
-    await at(16.6);
+    await at(29.6);
     await smoothScrollSectionProgress(page, 'jornada-mars', 0.06, 1_300);
     await smoothScrollSectionProgress(page, 'jornada-mars', 0.16, 2_000);
     await smoothScrollSectionProgress(page, 'jornada-mars', 0.25, 2_800);
@@ -663,18 +709,18 @@ async function captureReel({ baseUrl, workDir, durationSeconds, preview }) {
     await smoothScrollSectionProgress(page, 'jornada-mars', 0.83, 3_200);
     await smoothScrollSectionProgress(page, 'jornada-mars', 0.90, 3_000);
 
-    // 52-59 s: answer, reveal the finish action, and enter the Mars finale.
+    // 65-72 s: answer, reveal the finish action, and enter the Mars finale.
     mark('mars-quiz');
-    await at(52.2);
+    await at(65.2);
     await answerQuiz(page);
-    await at(55.8);
+    await at(68.8);
     await finishJourney(page);
-    await at(59.4);
+    await at(72.4);
     await settle(page, 500);
 
-    // 64-80 s: return to orbit and focus the Moon card.
+    // 77-93 s: return to orbit and focus the Moon card.
     mark('return-to-orbit');
-    await at(64.0);
+    await at(77.0);
     await clickElement(
       page.locator('.cine-finale__actions .cine-action').first(),
     );
@@ -685,19 +731,19 @@ async function captureReel({ baseUrl, workDir, durationSeconds, preview }) {
       await sleep(3_400);
       await smoothScrollSectionProgress(page, 'orbita', 0.18, 1_800);
       await smoothScrollSectionProgress(page, 'orbita', 0.30, 1_800);
-      await smoothScrollSectionProgress(page, 'orbita', 0.46, 2_200);
-      await at(79.2);
+      await smoothScrollSectionProgress(page, 'orbita', 0.58, 2_200);
+      await at(92.2);
       await page
         .locator('.cine-world-card.is-moon')
         .hover({ force: true, timeout: 5_000 })
         .catch(() => {});
 
-      // 84-130 s: open the Moon and traverse every beat.
+      // 97-143 s: open the Moon and traverse every beat.
       mark('open-moon');
-      await at(84.0);
+      await at(97.0);
       await openWorld(page, 'moon');
       await sleep(2_200);
-      await at(86.6);
+      await at(99.6);
       await smoothScrollSectionProgress(page, 'jornada-moon', 0.07, 1_400);
       await smoothScrollSectionProgress(page, 'jornada-moon', 0.16, 2_200);
       await smoothScrollSectionProgress(page, 'jornada-moon', 0.24, 2_600);
@@ -712,22 +758,26 @@ async function captureReel({ baseUrl, workDir, durationSeconds, preview }) {
       // beyond that boundary so the active quiz is mounted before the click.
       await smoothScrollSectionProgress(page, 'jornada-moon', 0.94, 3_500);
 
-      // 132-145 s: Moon quiz, finale, then return to the opening.
+      // 145-158 s: Moon quiz, finale, then return to the opening.
       mark('moon-quiz');
-      await at(132.0);
-      await answerQuiz(page);
-      await at(135.8);
-      await finishJourney(page);
-      await at(139.2);
-      await settle(page, 500);
       await at(145.0);
+      await answerQuiz(page);
+      await at(148.8);
+      await finishJourney(page);
+      await at(152.2);
+      await settle(page, 500);
+      await at(158.0);
       await clickElement(
         page.locator('.cine-finale__actions .cine-text-action').first(),
       );
     }
 
-    // Hold the opening through the capture endpoint. The final five seconds
-    // are replaced by frame 1 during materialization for a clean loop.
+    // 166-177 s: depart the interface through the debris field and settle to
+    // black. The final three seconds match frame 1 for a seamless loop.
+    mark('cinematic-outro');
+    await at(166.0);
+    await page.evaluate(() => window.__echoesCinema.playOutro());
+    await at(177.0);
     mark('final-hold');
     await at(durationSeconds);
     mark('capture-end');
@@ -770,7 +820,7 @@ async function main() {
   const workDir = args.preview
     ? `${args.workDir}-preview`
     : args.workDir;
-  const durationSeconds = args.preview ? 66 : MASTER_DURATION_SECONDS;
+  const durationSeconds = args.preview ? 80 : MASTER_DURATION_SECONDS;
 
   await mkdir(args.outDir, { recursive: true });
   await mkdir(workDir, { recursive: true });
@@ -829,7 +879,7 @@ async function main() {
     capturedFrames: capture.capturedFrames,
     durationSeconds,
     workDir,
-    loopFreezeSeconds: args.preview ? 0 : 5,
+    loopFreezeSeconds: args.preview ? 0 : 3,
   });
   console.log(JSON.stringify({ phase: 'materialized', ...sequence }, null, 2));
 
@@ -849,7 +899,7 @@ async function main() {
 
   let highlight = null;
   let srtPath = null;
-  if (!args.preview) {
+  if (!args.preview && args.withHighlight) {
     const overlayLaunch = await launchBrowser();
     const overlayContext = await createContext(overlayLaunch.browser);
     let overlays;
@@ -881,7 +931,7 @@ async function main() {
       durationTolerance: 0.4,
     }),
   );
-  if (!args.preview) {
+  if (!args.preview && args.withHighlight) {
     validations.push(
       await validateMedia({
         mediaPath: path.join(
@@ -900,7 +950,7 @@ async function main() {
         phase: 'complete',
         files: {
           master: masterPath,
-          highlight: args.preview
+          highlight: args.preview || !args.withHighlight
             ? null
             : path.join(args.outDir, 'echos-30s-en-captions.mp4'),
           srt: srtPath,
