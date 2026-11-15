@@ -1,0 +1,937 @@
+REFERÊNCIAS E FONTES — AFTER THE SIGNAL (EQUIPE ECHOES)
+=======================================================
+
+Projeto: After the Signal — “O sinal termina. A luz continua.”
+Workspace auditado: C:\Users\ferna\Desktop\03 - Projetos e Código\Hackthoon
+Data desta auditoria: 15/11/2026
+Objetivo deste documento: registrar os links, fontes, créditos, licenças e
+limitações usados pelo projeto; explicar o que foi extraído de cada local; e
+mostrar, de forma rastreável, como os dados da NASA sustentam a experiência.
+
+Observação de escopo: este arquivo reúne as fontes informacionais, factuais,
+visuais, cartográficas e técnicas citadas ou incorporadas pelo projeto. URLs de
+registry npm no package-lock.json são metadados de resolução de dependências,
+não fontes intelectuais do produto. URLs de namespace XML em SVGs e o endereço
+local http://127.0.0.1:5173 dos scripts de QA também não são fontes externas de
+conteúdo.
+
+
+1. O QUE O PROJETO É
+====================
+
+After the Signal é um museu espacial interativo para crianças de
+aproximadamente 8 a 13 anos. A experiência convida o visitante a escolher um
+mundo, aproximar-se dele, encontrar um equipamento real e compreender sua
+história por meio de imagens, um modelo 3D, uma vista educacional em camadas,
+textos curtos, narração opcional por voz do navegador, uma pergunta de
+compreensão e uma tela final de legado.
+
+A história principal é o rover Opportunity, da NASA, em Marte. A segunda
+jornada apresenta a Lua e o contexto da Apollo 11, incluindo uma ilustração
+esquemática do Módulo Lunar Eagle. A interface também apresenta outros planetas
+do Sistema Solar e a Via Láctea.
+
+O percurso implementado é:
+home → aproximação → mapa → artefato → capítulos → evidência/quiz → legado.
+
+Há um modo de arquivo linear e acessível, uma opção de redução de movimento,
+fallbacks quando WebGL ou assets falham e um painel “O que é real aqui?” com a
+proveniência dos materiais.
+
+O projeto é independente. Não é um produto oficial da NASA e não implica
+endosso da agência.
+
+
+2. POR QUE OS DADOS DA NASA FORAM IMPORTANTES
+=============================================
+
+Os dados da NASA não funcionam como decoração. Eles são a espinha dorsal
+factual, visual e educacional do projeto. Sem eles, After the Signal seria
+apenas uma interface de ficção científica sobre um robô genérico; com eles, o
+visitante pode examinar uma missão real, um equipamento real e evidências reais
+de outro mundo.
+
+2.1 Precisão histórica
+----------------------
+
+A NASA fornece a cronologia verificável da missão Opportunity: chegada a
+Marte em janeiro de 2004, missão planejada para aproximadamente 90 sols
+marcianos, operação por mais de 14 anos, 45,16 km percorridos, último contato
+em 10 de junho de 2018 (sol 5111) e anúncio do fim da missão em 13 de fevereiro
+de 2019. Esses fatos aparecem nos capítulos da jornada, na tela de legado, no
+quiz, nos hotspots e no painel de fontes.
+
+2.2 Autenticidade visual
+------------------------
+
+O projeto usa o modelo GLB oficial Spirit/Opportunity, fotografias reais da
+missão, o mapa real do percurso final e uma textura global de Marte baseada no
+mosaico Viking MDIM 2.1 da NASA. Isso permite que o visitante veja o desenho
+real do rover, o trajeto real e imagens produzidas durante a missão, em vez de
+substituir tudo por ilustrações inventadas.
+
+2.3 Educação sobre engenharia
+-----------------------------
+
+As descrições dos instrumentos, painéis solares, câmeras, rodas, suspensão
+rocker-bogie, antenas e braço robótico vêm de referências da NASA sobre a
+missão e seus instrumentos. Essas informações alimentam o esquema 2D e a
+leitura 3D em camadas. A criança pode passar do objeto inteiro para os sistemas
+que o fazem funcionar.
+
+2.4 Evidência e letramento científico
+-------------------------------------
+
+As imagens do autorretrato, do panorama final, da última transmissão e das
+esferas de hematita são tratadas como evidências classificadas: “foto real
+NASA”, “dado real NASA” ou “mapa científico NASA”. O projeto também corrige
+uma desinformação comum: o Opportunity não enviou uma frase escrita de
+despedida; o último registro foi um dado/imagem incompleto e ruidoso. Essa
+distinção ensina a criança a separar evidência de interpretação.
+
+2.5 Transparência e confiança
+-----------------------------
+
+Cada material importante tem crédito e link. O painel “O que é real aqui?”
+mostra as fontes, e o arquivo SOURCES.md registra IDs, créditos e caminhos
+locais. Assim, professores, jurados e visitantes podem verificar o que é dado
+original, o que é reconstrução e o que é narração produzida pela equipe.
+
+2.6 Impacto pretendido
+----------------------
+
+O impacto pretendido é fazer a criança terminar a experiência sabendo não
+somente “o que o robô fez”, mas também como a ciência transforma uma máquina
+em conhecimento duradouro. O projeto busca despertar curiosidade por
+engenharia, astronomia, cartografia e história da exploração espacial; reforçar
+o hábito de perguntar “de onde vem esta informação?”; e mostrar que uma missão
+pode terminar sem que seu legado termine.
+
+2.7 Onde os dados da NASA aparecem, em resumo
+---------------------------------------------
+
+- Fatos e números: src/i18n/content.ts, src/content/opportunity.ts,
+  src/content/roverSchematic.ts e telas de legado/quiz.
+- Modelo do rover: public/assets/artifacts/opportunity-rover.glb, carregado
+  por src/scenes/RoverViewer.tsx e por src/components/RoverTeardown.tsx.
+- Mapa da rota: public/assets/maps/opportunity-traverse-nasa.jpg, usado no
+  capítulo de mapa e nos cartões da jornada.
+- Imagens históricas: public/assets/images/, usadas em src/content/opportunity.ts
+  e nos componentes de capítulos/evidência.
+- Marte 3D: public/assets/maps/mars-viking-mdim-*.jpg, usados em
+  src/scenes/NasaMarsSphere.tsx; a textura legada mars-texture-nasa.jpg continua
+  referenciada em src/content/solarSystem.ts.
+- Engenharia: src/content/roverSchematic.ts, src/content/roverTeardown.ts,
+  src/i18n/roverTeardown.ts e src/components/RoverTeardown.tsx.
+- Fontes visíveis ao público: src/components/SourcesPanel.tsx.
+- Lua/Apollo: src/i18n/content.ts e src/i18n/lunarTeardown.ts.
+
+
+3. CATÁLOGO DE FONTES NASA
+===========================
+
+Os identificadores abaixo são usados apenas para rastreabilidade interna
+deste relatório.
+
+NASA-01 — Visão geral da missão Opportunity
+URL: https://science.nasa.gov/mission/mer-opportunity/
+Extraído: visão geral da missão; chegada a Marte em janeiro de 2004; missão
+planejada para aproximadamente 90 sols; engenharia do rover; seis rodas;
+duração excepcional; descobertas relacionadas a ambientes antigos com água.
+Uso no produto: narrativa principal, hotspots, quiz, ficha de legado e
+referências de engenharia.
+Destinos locais: src/i18n/content.ts, src/content/opportunity.ts,
+src/content/roverSchematic.ts e src/components/SourcesPanel.tsx.
+Classificação: fonte factual usada; página citada, não embarcada.
+
+NASA-02 — Fim da missão Opportunity
+URL: https://www.nasa.gov/news-release/nasas-record-setting-opportunity-rover-mission-on-mars-comes-to-end/
+Extraído: fim da missão em 13 de fevereiro de 2019; caráter recordista da
+missão; contexto da tempestade de poeira; mais de 14 anos de operação; 45,16 km
+percorridos.
+Uso no produto: capítulos “Muito além do esperado”, “O último sinal” e “O que
+ficou”; fatos de legado; hotspot dos painéis solares.
+Destinos locais: src/i18n/content.ts, src/content/opportunity.ts e
+src/components/SourcesPanel.tsx.
+Classificação: fonte factual usada; página citada, não embarcada.
+
+NASA-03 — Último dado recebido
+URL: https://science.nasa.gov/resource/opportunitys-last-message/
+Extraído: último contato em 10 de junho de 2018, sol 5111; imagem/dado
+incompleto e ruidoso; não se trata de uma mensagem escrita de despedida.
+Uso no produto: capítulo “O último sinal”; tela de evidência final; painel de
+fontes; texto educativo que corrige a frase fictícia atribuída ao rover.
+Destinos locais: public/assets/images/opportunity-last-message.jpg,
+src/content/opportunity.ts, src/i18n/content.ts e
+src/components/SourcesPanel.tsx.
+Classificação: fonte factual e visual usada; imagem embarcada.
+
+NASA-04 — Imagens finais do Opportunity
+URL: https://science.nasa.gov/resource/opportunity-rovers-final-mars-images/
+Extraído: panorama final; imagens incompletas/quadros que mostram como o
+panorama foi montado; contexto visual do fim da missão.
+Uso no produto: capítulo “Muito além do esperado”; imagem de panorama final;
+chamada visual da jornada.
+Destino local: public/assets/images/opportunity-final-panorama.jpg,
+referenciado por src/content/opportunity.ts e src/i18n/content.ts.
+Classificação: fonte factual e visual usada; imagem embarcada.
+
+NASA-05 — Contexto do sol marciano
+URL: https://www.nasa.gov/missions/mer/nasa-celebrates-decade-of-mars-exploration-by-spirit-opportunity/
+Extraído: definição/contexto de sol marciano e duração aproximada de 90 sols
+em comparação com dias terrestres.
+Uso no produto: texto “90 dias / cerca de 92 dias terrestres” e explicações
+da duração planejada.
+Destinos locais: src/i18n/content.ts e src/content/opportunity.ts.
+Classificação: referência factual de apoio.
+
+NASA-06 — Instrumentos científicos do Spirit e Opportunity
+URL: https://science.nasa.gov/mission/mars-exploration-rovers-spirit-and-opportunity/science-instruments/
+Extraído: Pancam; câmeras de navegação; Hazard Cameras; APXS; espectrômetro
+Mössbauer; imageador microscópico; RAT; painéis solares; função dos sistemas de
+imagem, análise e energia.
+Uso no produto: esquema 2D, leitura 3D do rover, descrições de peças, hotspots
+e camadas educacionais.
+Destinos locais: src/content/roverSchematic.ts, src/content/roverTeardown.ts,
+src/i18n/roverTeardown.ts e src/components/RoverTeardown.tsx.
+Classificação: fonte factual usada para engenharia e instrumentos.
+
+NASA-07 — Pôster com o Opportunity identificado
+URL: https://mars.nasa.gov/files/resources/OpportunityPoster.pdf
+Extraído: identificação externa de Navcams, antena de alto ganho, antenas de
+baixo ganho e UHF, rocker-bogie, corpo, rodas e organização geral do rover.
+Uso no produto: posicionamento e nomes das peças no esquema e nas camadas do
+teardown.
+Destinos locais: src/content/roverSchematic.ts e src/content/roverTeardown.ts.
+Classificação: referência visual/técnica usada; PDF não embarcado.
+
+NASA-08 — Esferas de hematita (“blueberries”)
+URL: https://science.nasa.gov/resource/berries-on-the-ground/
+Extraído: esferas de hematita observadas em Marte; relação com condições
+ambientais antigas e evidências ligadas à água.
+Uso no produto: capítulo “O que ficou”, quiz e imagem de evidência.
+Destinos locais: public/assets/images/opportunity-hematite-berries.jpg,
+src/content/opportunity.ts, src/i18n/content.ts e
+src/components/SourcesPanel.tsx.
+Classificação: fonte factual e visual usada; imagem embarcada.
+
+NASA-09 — Página do modelo 3D oficial Spirit/Opportunity
+URL: https://science.nasa.gov/resource/spirit-and-opportunity-rover-3d-model/
+Extraído: identificação e disponibilização do modelo 3D oficial do rover.
+Uso no produto: página de origem do GLB; botão “Ver fonte”; tela do artefato.
+Destinos locais: src/content/missions.ts, src/scenes/RoverViewer.tsx,
+src/components/RoverTeardown.tsx, public/assets/artifacts/opportunity-rover.glb.
+Classificação: fonte visual e de modelo usada; citação e modelo embarcado.
+
+NASA-10 — Arquivo direto do GLB oficial
+URL: https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/gltf_files/24883_MER_static.glb
+Extraído: geometria do Spirit/Opportunity, texturas embutidas e grupos de
+material do arquivo.
+Uso no produto: modelo 3D interativo e vista explodida educacional.
+Destino local: public/assets/artifacts/opportunity-rover.glb.
+Classificação: asset oficial baixado e embarcado. O arquivo é uma malha única
+com nove grupos de material; não contém peças internas removíveis.
+
+NASA-11 — Página do mapa da rota final
+URL: https://science.nasa.gov/photojournal/opportunitys-final-traverse-map/
+Extraído: mapa do percurso final do Opportunity; contexto cartográfico da
+missão; identificação PIA23178.
+Uso no produto: tela de mapa e cartões da jornada.
+Destinos locais: public/assets/maps/opportunity-traverse-nasa.jpg,
+src/content/opportunity.ts e src/components/SourcesPanel.tsx.
+Classificação: fonte cartográfica usada; imagem embarcada.
+
+NASA-12 — Arquivo direto do mapa PIA23178
+URL: https://assets.science.nasa.gov/content/dam/science/psd/photojournal/pia/pia23/pia23178/PIA23178.jpg
+Extraído: arquivo de imagem do mapa final.
+Destino local: public/assets/maps/opportunity-traverse-nasa.jpg.
+Crédito registrado: NASA/JPL-Caltech/University of Arizona.
+
+NASA-13 — Arquivo direto do último dado PIA22929
+URL: https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/detail_files/2/22339_PIA22929-web.jpg
+Extraído: imagem incompleta da última transmissão.
+Destino local: public/assets/images/opportunity-last-message.jpg.
+Crédito registrado: NASA/JPL-Caltech.
+
+NASA-14 — Página do autorretrato de 2014
+URL: https://science.nasa.gov/resource/self-portrait-by-opportunity-mars-rover-in-january-2014/
+Extraído: autorretrato real do Opportunity; data das imagens entre 3 e 6 de
+janeiro de 2014; panorama de trabalho com painéis solares visíveis.
+Uso no produto: capítulo de chegada, fallback do modelo, hotspot de câmeras e
+imagem histórica.
+Destinos locais: public/assets/images/opportunity-selfie.jpg,
+src/content/opportunity.ts, src/i18n/content.ts e
+src/components/SourcesPanel.tsx.
+Classificação: fonte visual usada; imagem embarcada.
+
+NASA-15 — Arquivo direto do autorretrato PIA17759
+URL: https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/detail_files/5917_pia17759_JC2_2000-full2.jpg
+Extraído: arquivo de imagem do autorretrato.
+Destino local: public/assets/images/opportunity-selfie.jpg.
+Crédito registrado: NASA/JPL-Caltech/Cornell/ASU.
+
+NASA-16 — Arquivo direto do panorama final PIA-22908
+URL: https://assets.science.nasa.gov/content/dam/science/psd/solar/2023/09/p/i/a/PIA-22908-LegacyPan-ANNOTATED-NASA-1.jpg
+Extraído: panorama final com anotações e quadros incompletos.
+Destino local: public/assets/images/opportunity-final-panorama.jpg.
+Crédito registrado: NASA/JPL-Caltech/Cornell/ASU.
+
+NASA-17 — Arquivo direto das esferas de hematita PIA05273
+URL: https://assets.science.nasa.gov/content/dam/science/psd/mars/resources/detail_files/5839_Sol13B_MI_Pancam_Berries-PIA05273-full2.jpg
+Extraído: imagem das esferas/hematita no solo marciano.
+Destino local: public/assets/images/opportunity-hematite-berries.jpg.
+Crédito registrado: NASA/JPL-Caltech/Cornell/USGS.
+
+NASA-18 — Portal Mars Trek
+URL: https://trek.nasa.gov/mars/
+Extraído: referência de cartografia interativa e acesso à camada global de
+Marte.
+Uso no produto: fonte declarada no painel de fontes e base para a textura do
+planeta.
+Destinos locais: src/content/missions.ts, src/components/SourcesPanel.tsx e
+public/assets/maps/mars-viking-mdim-color-2k.jpg.
+Classificação: fonte cartográfica usada; portal citado.
+
+NASA-19 — Metadados da camada Viking MDIM 2.1
+URL: https://trek.nasa.gov/mars/TrekWS/rest/cat/metadata/fgdc/html?label=Mars_Viking_MDIM21_ClrMosaic_global_232m
+Extraído: identificação da camada Mars_Viking_MDIM21_ClrMosaic_global_232m;
+contexto de mosaico global colorido Viking; crédito NASA/JPL/USGS.
+Uso no produto: documentação da textura de Marte.
+Destino local: public/assets/maps/mars-viking-mdim-color-2k.jpg.
+
+NASA-20 — Base WMTS da textura Viking
+URL: https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0/default/default028mm
+Extraído: tiles do mosaico Viking usados para montar o mapa de cor local.
+Destino local: public/assets/maps/mars-viking-mdim-color-2k.jpg.
+Uso no produto: textura aplicada ao globo de Marte em src/scenes/NasaMarsSphere.tsx.
+Observação: a imagem de cor foi reamostrada localmente; as imagens normal e de
+rugosidade são derivadas locais e não são um DEM científico.
+
+NASA-21 — Página legada de Marte em NASA 3D Resources
+URL: https://science.nasa.gov/3d-resources/mars/
+Extraído: referência de textura/modelo 3D de Marte.
+Uso no produto: origem declarada da textura legada.
+Destino local: public/assets/maps/mars-texture-nasa.jpg, ainda referenciado em
+src/content/solarSystem.ts para o globo da home e elementos 2D.
+Classificação: fonte de textura usada; existe uma inconsistência documental:
+SOURCES.md afirma que essa textura não é mais carregada, mas o código atual
+ainda a referencia em src/content/solarSystem.ts.
+
+NASA-22 — Modelo 3D de Marte
+URL: https://science.nasa.gov/resource/planet-mars-3d-model/
+Extraído: referência de modelo oficial de Marte.
+Uso no produto: consulta e alternativa de implementação; o modelo não foi
+incluído no bundle. A experiência usa uma esfera com textura NASA.
+Classificação: consultado, não incorporado.
+
+NASA-23 — Fatos sobre a Lua
+URL: https://science.nasa.gov/moon/facts/
+Extraído: exosfera extremamente fina; regolito; grãos afiados/abrasivos; gelo
+de água em regiões permanentemente sombreadas, incluindo crateras polares.
+Uso no produto: jornada lunar, quiz lunar e textos de contexto.
+Destino local: src/i18n/content.ts.
+Classificação: fonte factual usada na experiência da Lua.
+
+NASA-24 — Programa Artemis
+URL: https://www.nasa.gov/humans-in-space/artemis/
+Extraído: contexto das novas missões tripuladas da NASA à Lua.
+Uso no produto: capítulo “Próximo passo” da jornada lunar.
+Destino local: src/i18n/content.ts.
+Classificação: fonte factual de contexto.
+
+NASA-25 — Apollo 11
+URL: https://www.nasa.gov/mission/apollo-11/
+Extraído: primeiro pouso humano na Lua em 20 de julho de 1969.
+Uso no produto: abertura da jornada lunar.
+Destino local: src/i18n/content.ts.
+Classificação: fonte factual usada.
+
+NASA-26 — Local de pouso da Apollo 11
+URL: https://science.nasa.gov/resource/apollo-11-landing-site/
+Extraído: evidência visual/contexto do local de pouso; referência ao estágio de
+descida que permaneceu na Lua.
+Uso no produto: história lunar e vista didática do Módulo Lunar Eagle.
+Destinos locais: src/content/missions.ts, src/i18n/content.ts e
+src/i18n/lunarTeardown.ts.
+Classificação: fonte factual e visual de referência; não há imagem da Apollo
+embarcada nesta versão.
+
+NASA-27 — Recurso 3D do Módulo Lunar Apollo
+URL: https://science.nasa.gov/3d-resources/apollo-lunar-module/
+Extraído: referência pública para anatomia do Eagle: estágio de subida,
+estágio de descida, trem de pouso, motor, antenas e conjunto geral.
+Uso no produto: textos e ilustração esquemática do LunarModuleTeardown.
+Destino local: src/i18n/lunarTeardown.ts e
+src/components/LunarModuleTeardown.tsx.
+Classificação: referência de anatomia; o modelo não foi baixado. A vista
+explodida do Eagle é um SVG esquemático feito localmente, não um CAD oficial.
+
+NASA-28 — Modelo 3D lunar do NASA SVS
+URL: https://svs.gsfc.nasa.gov/14959/
+Extraído: referência catalogada no briefing como possível modelo lunar
+(moon_small.glb ou mapa de cor mais leve).
+Uso no produto: não incorporado ao bundle.
+Classificação: consultado como alternativa; ausência deliberada documentada em
+ASSETS_TODO.md.
+
+NASA-29 — Cartografia lunar
+URL: https://trek.nasa.gov/moon/
+Extraído: referência científica visual para localização e cartografia lunar.
+Uso no produto: consulta de contexto; não é usado como asset embarcado.
+Classificação: consultado, não incorporado.
+
+NASA-30 — Documentação de mapas e APIs de tiles
+URL: https://trek.nasa.gov/tiles/apidoc/
+Extraído: referência técnica para mapas/tiles; explicitamente opcional no
+briefing.
+Uso no produto: não incorporado.
+Classificação: consultado, não incorporado.
+
+NASA-31 — Alternativa de imagens finais do Opportunity
+URL: https://science.nasa.gov/resource/last-images-opportunity-took/
+Extraído: alternativa de mídia real citada no briefing.
+Uso no produto: foi usada a página NASA-04 e o panorama local; esta alternativa
+não aparece como asset final.
+Classificação: consultado, não incorporado.
+
+NASA-32 — Catálogo NASA 3D Resources
+URL: https://science.nasa.gov/3d-resources/
+Extraído: catálogo de modelos 3D oficiais e diretrizes de exploração de
+recursos.
+Uso no produto: referência de descoberta de assets e diretriz.
+Classificação: referência de acervo; não é um asset embarcado.
+
+NASA-33 — Diretrizes de uso de imagens e mídia da NASA
+URL: https://www.nasa.gov/nasa-brand-center/images-and-media/
+Extraído: orientação de uso, crédito e limites de identidade visual.
+Uso no produto: governança de créditos; o logotipo/insígnia da NASA não é
+usado como identidade do projeto.
+Classificação: referência de conformidade e atribuição.
+
+NASA-34 — NSSDCA
+URL: https://nssdc.gsfc.nasa.gov/
+Extraído: catálogo público de missões e dados da NASA.
+Uso no produto: link de contexto no painel de fontes.
+Destino local: src/content/missions.ts e src/components/SourcesPanel.tsx.
+Classificação: referência de catálogo; não fornece asset embarcado.
+
+
+4. FONTES NÃO-NASA, LICENÇAS E CRÉDITOS
+=========================================
+
+NSS-01 — Texturas de planetas e da Lua
+URL: https://www.solarsystemscope.com/textures/
+Extraído: texturas equirretangulares de Mercúrio, Vênus, Terra, Lua, Júpiter,
+Saturno, anel de Saturno, Urano e Netuno.
+Licença declarada no projeto: Creative Commons Attribution 4.0 (CC BY 4.0).
+Uso no produto: globos do Sistema Solar e superfícies de corpos bloqueados;
+texturas também reaproveitadas em elementos visuais da jornada.
+Destinos locais:
+- public/assets/planets/mercury-solarsystemscope.jpg
+- public/assets/planets/venus-solarsystemscope.jpg
+- public/assets/planets/earth-solarsystemscope.jpg
+- public/assets/planets/moon-solarsystemscope.jpg
+- public/assets/planets/jupiter-solarsystemscope.jpg
+- public/assets/planets/saturn-solarsystemscope.jpg
+- public/assets/planets/saturn-ring-solarsystemscope.png
+- public/assets/planets/uranus-solarsystemscope.jpg
+- public/assets/planets/neptune-solarsystemscope.jpg
+Uso no código: src/content/solarSystem.ts e src/scenes/SolarSystem.tsx.
+Observação: SOURCES.md lista apenas parte desses arquivos; Mercúrio, Vênus e o
+anel de Saturno também devem constar na atribuição final.
+
+NSS-02 — Panorama da Via Láctea
+URL: https://www.eso.org/public/images/eso0932a/
+Extraído: panorama do céu da Via Láctea.
+Crédito: ESO/S. Brunier.
+Licença declarada: CC BY 4.0.
+Uso no produto: fundo espacial e parallax da experiência 3D.
+Destinos locais:
+- public/assets/space/milky-way-eso-4096.jpg
+- public/assets/space/milky-way-eso-large.jpg
+Uso no código: src/scenes/SolarSystem.tsx.
+
+NSS-03 — Texto da licença Creative Commons BY 4.0
+URL: https://creativecommons.org/licenses/by/4.0/
+Extraído: termos de atribuição e compartilhamento aplicáveis às texturas
+planetárias e ao panorama ESO.
+Uso no produto: atribuição exibida no painel de fontes.
+Destino local: src/components/SourcesPanel.tsx.
+
+
+5. DESAFIO, ORGANIZAÇÃO E REFERÊNCIAS DE INTERAÇÃO
+===================================================
+
+CH-01 — Desafio oficial do NASA Space Apps 2026
+URL: https://www.spaceappschallenge.org/2026/challenges/nasas-discarded-equipment-storytelling/
+Extraído: tema do desafio “Abandoned but not Forgotten”; contexto de contar a
+história de equipamentos descartados/abandonados no espaço.
+Uso no produto: enquadramento conceitual do projeto e narrativa.
+Destino local: CODEX_BRIEF_AFTER_THE_SIGNAL.md e SOURCES.md.
+Classificação: referência de desafio; não é asset do app.
+
+CH-02 — Recursos do desafio
+URL: https://www.spaceappschallenge.org/2026/challenges/nasas-discarded-equipment-storytelling/?tab=resources
+Extraído: orientação para consultar os recursos oficiais, incluindo fontes
+NASA, antes da submissão.
+Uso no produto: checklist de elegibilidade e proveniência.
+Classificação: referência de organização.
+
+CH-03 — Orientação dos organizadores
+URL: https://github.com/nasa/spaceapps/discussions/1858
+Extraído: orientação sobre início permitido, fontes, uso de IA e submissão.
+Uso no produto: regra de elegibilidade documentada no briefing.
+Classificação: referência de organização.
+
+CH-04 — Orientação para Global Awards
+URL: https://github.com/nasa/spaceapps/discussions/1849
+Extraído: orientação sobre recursos obrigatórios para a categoria Global
+Awards.
+Uso no produto: checklist de fontes e submissão.
+Classificação: referência de organização.
+
+INT-01 — Referência de interação “teardown”
+URL: https://antihype.com.br/skills/teardown/
+Extraído: padrão geral de interação com objeto central, separação progressiva,
+foco em uma parte, câmera dedicada e retorno ao estado montado.
+Uso no produto: inspirou apenas a linguagem de interação.
+Classificação: referência conceitual; nenhum código, asset, modelo, texto ou
+configuração foi copiado.
+
+INT-02 — Referência de cutaway
+URL: https://github.com/Nyxera0x/cutaway
+Extraído: referência visual/conceitual de corte e exploração de partes.
+Uso no produto: inspiração para a leitura em camadas.
+Classificação: referência conceitual; não há código ou asset incorporado.
+
+
+6. REFERÊNCIAS DE SOFTWARE, BIBLIOTECAS E FONTES TIPOGRÁFICAS
+==============================================================
+
+As versões abaixo foram retiradas diretamente de package.json.
+
+TECH-01 — React Three Fiber
+URL: https://r3f.docs.pmnd.rs/
+Uso: renderização das cenas Three.js dentro do React.
+
+TECH-02 — Drei
+URL: https://drei.docs.pmnd.rs/
+Uso: helpers de carregamento de texturas/modelos, câmera, controles e
+ambientes 3D.
+
+TECH-03 — Three.js
+URL: https://threejs.org/docs/
+Uso: base de geometria, materiais, texturas, câmeras e renderização WebGL.
+
+TECH-04 — Motion for React
+URL: https://motion.dev/docs/react
+Uso: transições e animações de interface.
+
+TECH-05 — Bricolage Grotesque
+URL: https://fontsource.org/fonts/bricolage-grotesque
+Pacote: @fontsource-variable/bricolage-grotesque ^5.3.0
+Uso: títulos, números e placas; licença declarada no ecossistema Fontsource:
+OFL-1.1.
+
+TECH-06 — Atkinson Hyperlegible
+URL: https://fontsource.org/fonts/atkinson-hyperlegible
+Pacote: @fontsource/atkinson-hyperlegible ^5.3.0
+Uso: corpo, controles, legendas e créditos; legibilidade funcional.
+
+TECH-07 — Stack registrada
+React ^19.3.1; React DOM ^19.3.1; TypeScript ^7.0.2; Vite ^8.3.8;
+Three.js ^0.187.0; @react-three/fiber ^9.8.2; @react-three/drei ^10.7.9;
+Motion ^14.14.0; Zustand ^5.1.0; Lucide React ^1.72.0.
+Testes/QA: Vitest ^5.1.0; Testing Library; jsdom; Playwright Core ^1.65.1;
+axe-core Playwright ^4.14.0.
+
+Observação: as URLs acima documentam a documentação oficial das ferramentas.
+O package-lock.json contém URLs de registry usadas apenas para instalar
+dependências; não são referências de conteúdo do projeto.
+
+
+7. ARQUIVOS LOCAIS E O QUE CADA UM FORNECEU
+===========================================
+
+LOCAL-01 — README.md
+Forneceu: descrição do produto, público, fluxo, funcionalidades, rotas de
+demonstração, requisitos de execução, tabela de assets reais, limites de
+acessibilidade e limitações conhecidas.
+Observação: está parcialmente desatualizado em relação à textura Viking e à
+experiência lunar mais recente.
+
+LOCAL-02 — SOURCES.md
+Forneceu: principal linha de base de proveniência; datas de consulta; IDs
+PIA; créditos; links diretos; caminhos locais; derivação dos mapas normal e de
+rugosidade; distinção entre assets e referências.
+Observação: precisa ser ampliado com Mercúrio, Vênus e anel de Saturno; há
+uma inconsistência sobre a textura legada de Marte.
+
+LOCAL-03 — ASSETS_TODO.md
+Forneceu: inventário de assets presentes, pendências, ausências deliberadas e
+configuração de hospedagem estática.
+Observação: está desatualizado quanto aos arquivos planetários independentes,
+ao trabalho lunar e à textura Viking.
+
+LOCAL-04 — CODEX_BRIEF_AFTER_THE_SIGNAL.md
+Forneceu: escopo do desafio, requisitos de produto, fontes prioritárias,
+arquitetura esperada, regras de honestidade, critérios de aceite e links de
+organização/documentação.
+
+LOCAL-05 — docs/DESIGN.md
+Forneceu: conceito de museu noturno, “O sinal termina. A luz continua.”,
+tipografia, movimento, interação de teardown, regra de honestidade e princípios
+de acessibilidade.
+
+LOCAL-06 — docs/PITCH_90S.md
+Forneceu: público-alvo, problema, roteiro de demonstração, proposta de impacto
+e narrativa de apresentação.
+
+LOCAL-07 — src/content/missions.ts
+Forneceu: registro central de URLs da NASA; mapa de evidências; tipos de
+mídia; classificação de proveniência; links usados pelo painel de fontes.
+
+LOCAL-08 — src/content/opportunity.ts
+Forneceu: capítulos do Opportunity; textos de chegada, longa jornada, último
+sinal e descoberta; créditos; links externos; hotspots; quiz; imagem final.
+
+LOCAL-09 — src/content/roverSchematic.ts
+Forneceu: peças do esquema 2D, sistemas, descrições de painéis solares,
+Pancam, Navcams, antenas, braço, Hazard Cameras, corpo, núcleo ilustrativo,
+rocker-bogie e seis rodas; links de fonte por peça.
+
+LOCAL-10 — src/content/roverTeardown.ts
+Forneceu: mapeamento dos materiais do GLB para seis grupos visuais
+educacionais; nota de que o modelo é uma malha única e não uma montagem
+desmontável.
+
+LOCAL-11 — src/i18n/content.ts
+Forneceu: jornada bilíngue de Marte e da Lua; fatos de duração, distância,
+último sinal, hematita, Lua, Apollo, Artemis, quiz e fatos de legado.
+
+LOCAL-12 — src/i18n/roverTeardown.ts
+Forneceu: textos e avisos de honestidade do teardown 3D; distinção entre
+grupos de material, peças internas e sequência real de montagem.
+
+LOCAL-13 — src/i18n/lunarTeardown.ts
+Forneceu: descrições do Eagle, estágio de subida, estágio de descida, motor,
+trem de pouso, antenas, aviso de ilustração interpretativa e links NASA.
+
+LOCAL-14 — src/components/SourcesPanel.tsx
+Forneceu: painel visível “O que é real aqui?”, links de proveniência,
+classificação dos materiais e correção sobre a frase fictícia atribuída ao
+Opportunity.
+
+LOCAL-15 — src/scenes/NasaMarsSphere.tsx
+Forneceu: uso direto da textura de cor Viking e dos mapas normal/roughness
+derivados no globo de Marte.
+
+LOCAL-16 — src/scenes/SolarSystem.tsx
+Forneceu: uso das texturas Solar System Scope, do anel de Saturno e do
+panorama ESO; referência à textura legada de Marte.
+
+LOCAL-17 — src/scenes/RoverViewer.tsx
+Forneceu: carregamento do GLB oficial em /assets/artifacts/opportunity-rover.glb,
+escala, orientação, ambiente, luz, controles e fallback.
+
+LOCAL-18 — src/components/RoverTeardown.tsx
+Forneceu: leitura interativa do GLB por grupos de material; seleção,
+separação, foco, tour guiado, reassemblagem e aviso de que a vista é educativa.
+
+LOCAL-19 — src/components/LunarModuleTeardown.tsx
+Forneceu: ilustração SVG interpretativa do Eagle; não é CAD oficial nem
+modelo 3D baixado.
+
+LOCAL-20 — src/app/ScrollExperience.tsx e src/app/ArchiveExperience.tsx
+Forneceram: integração da jornada visual e da alternativa linear/acessível;
+ambos expõem o painel de fontes.
+
+LOCAL-21 — package.json
+Forneceu: versões reais das dependências e scripts de execução/teste/QA.
+
+LOCAL-22 — public/assets/ods/ods-4.svg e public/assets/ods/ods-9.svg
+Forneceram: selos locais personalizados para os ODS 4 (educação de qualidade)
+e 9 (indústria, inovação e infraestrutura). Não foi encontrada uma URL externa
+de download registrada para esses SVGs; portanto, não se deve inventar uma.
+
+
+8. O QUE FOI REALMENTE INCORPORADO, O QUE FOI CONSULTADO E O QUE É DERIVADO
+===========================================================================
+
+8.1 Assets oficiais incorporados fisicamente ao produto
+-------------------------------------------------------
+
+- public/assets/artifacts/opportunity-rover.glb — NASA-09/NASA-10.
+- public/assets/images/opportunity-last-message.jpg — NASA-03/NASA-13.
+- public/assets/images/opportunity-selfie.jpg — NASA-14/NASA-15.
+- public/assets/images/opportunity-final-panorama.jpg — NASA-04/NASA-16.
+- public/assets/images/opportunity-hematite-berries.jpg — NASA-08/NASA-17.
+- public/assets/maps/opportunity-traverse-nasa.jpg — NASA-11/NASA-12.
+- public/assets/maps/mars-viking-mdim-color-2k.jpg — NASA-18/NASA-19/NASA-20.
+- public/assets/maps/mars-texture-nasa.jpg — NASA-21.
+
+8.2 Fatos e referências usados, mas sem asset baixado
+-----------------------------------------------------
+
+- NASA-01: história e engenharia do Opportunity.
+- NASA-02: fim, duração, distância e tempestade.
+- NASA-05: contexto dos sols.
+- NASA-06: instrumentos e sistemas.
+- NASA-07: identificação visual das peças.
+- NASA-23: fatos da Lua.
+- NASA-24: Artemis.
+- NASA-25: Apollo 11.
+- NASA-26: local de pouso.
+- NASA-27: anatomia do Módulo Lunar.
+- NASA-34: catálogo de contexto.
+
+8.3 Links consultados, mas não incorporados como conteúdo/asset
+---------------------------------------------------------------
+
+- NASA-22: modelo 3D de Marte; a implementação usa esfera texturizada.
+- NASA-28: modelo lunar SVS; não foi baixado.
+- NASA-29: Mars/Moon Trek lunar; consulta apenas.
+- NASA-30: API de tiles; consulta apenas.
+- NASA-31: alternativa de imagens finais; prevaleceu NASA-04.
+- CH-01 a CH-04: referências do desafio e da organização, não assets do app.
+- INT-01 e INT-02: inspiração conceitual de interação, sem código/assets.
+
+8.4 Conteúdo local, autoral ou derivado
+---------------------------------------
+
+- Os mapas normal e de rugosidade de Marte foram derivados localmente do
+  mosaico de cor/luminância. Não são DEM, modelo de elevação ou produto
+  científico independente.
+- O esquema 2D do Opportunity é uma ilustração educacional; ele não é uma
+  planta de engenharia.
+- A vista explodida do Opportunity é uma organização educacional de materiais
+  do GLB; não é uma sequência real de desmontagem.
+- A vista explodida do Módulo Lunar Eagle é um SVG esquemático/interpretativo
+  feito pela equipe; não é CAD oficial nem modelo 3D da NASA.
+- O favicon e os selos ODS são identidade/arte local.
+- A narração usa a voz sintetizada do navegador; não é áudio original da NASA.
+
+
+9. ONDE OS DADOS DA NASA APARECEM NESTE DOCUMENTO E NO PROJETO
+==============================================================
+
+9.1 Neste relatório
+-------------------
+
+- As seções 3 e 4 listam as fontes e o que foi extraído de cada URL.
+- As seções 8 e 9 separam o que foi incorporado, consultado e derivado.
+- A seção 10 registra lacunas que impedem uma afirmação de proveniência
+  perfeita.
+- O anexo em inglês resume a resposta de submissão e repete a função dos dados
+  NASA para a experiência.
+
+9.2 Nos documentos internos
+---------------------------
+
+- SOURCES.md: principal registro de URLs, IDs, créditos, caminhos e derivações.
+- README.md: tabela de assets reais e descrição do produto.
+- ASSETS_TODO.md: inventário e ausências.
+- CODEX_BRIEF_AFTER_THE_SIGNAL.md: lista de fontes candidatas e critérios de
+  honestidade.
+- docs/DESIGN.md: regra de que o GLB é uma malha única e o desmonte é
+  educacional.
+- docs/PITCH_90S.md: uso dos fatos NASA na narrativa de apresentação.
+
+9.3 Na aplicação
+----------------
+
+- Mapa da rota: representa o percurso real do Opportunity e ancora o número
+  45,16 km.
+- Modelo oficial: permite observar a forma e as superfícies do rover real.
+- Esquema e camadas: traduzem os instrumentos e sistemas descritos pela NASA
+  em explicações para crianças.
+- Foto do autorretrato: humaniza o rover e mostra os painéis cobertos de poeira.
+- Panorama final: contextualiza o ambiente e a última fase da missão.
+- Último dado: prova material de que o sinal foi interrompido; não é uma fala
+  poética inventada.
+- Hematita: conecta o rover à descoberta científica sobre água antiga.
+- Lua e Apollo: ampliam o tema “abandonado, mas não esquecido” para outro
+  mundo, com uma ilustração honestamente rotulada.
+- Painel de fontes: permite ao visitante verificar a origem do que está vendo.
+
+
+10. LIMITAÇÕES, LACUNAS E CORREÇÕES RECOMENDADAS
+=================================================
+
+1. A frase “my battery is low and it’s getting dark” não foi enviada pelo
+   Opportunity. O último registro real foi uma imagem/dado incompleto. O
+   projeto acerta ao não apresentá-la como transmissão original.
+
+2. O GLB oficial é uma malha única com nove grupos de material e doze texturas
+   embutidas, aproximadamente 11,36 MB. As seis camadas do teardown são
+   agrupamentos visuais educacionais, não peças removíveis.
+
+3. O esquema 2D com corte interno e a vista do Eagle são ilustrativos. Não
+   representam fiação, tolerâncias, posições internas exatas ou uma ordem real
+   de montagem/desmontagem.
+
+4. As texturas normal e de rugosidade de Marte são derivadas locais do mapa de
+   cor; não são produtos científicos independentes. A textura de cor vem do
+   mosaico Viking MDIM 2.1.
+
+5. A Lua não usa modelo 3D oficial nesta versão. A superfície lunar no Sistema
+   Solar usa textura Solar System Scope; a vista do Eagle é um SVG local.
+
+6. A documentação está inconsistente em dois pontos:
+   - SOURCES.md deve incluir Mercúrio, Vênus e o anel de Saturno na tabela
+     Solar System Scope.
+   - SOURCES.md diz que mars-texture-nasa.jpg não é mais carregada, mas
+     src/content/solarSystem.ts ainda a referencia. Atualizar a documentação ou
+     o código para refletir a arquitetura final.
+
+7. README.md e ASSETS_TODO.md ainda descrevem uma versão anterior da textura
+   de Marte e do trabalho lunar. Antes de uma submissão, esses arquivos devem
+   ser reconciliados com o código atual.
+
+8. Os selos ODS 4 e 9 são SVGs locais. Não foi localizada uma URL de origem
+   externa registrada; não atribua a eles uma fonte inventada.
+
+9. O projeto não usa logotipo ou insígnia da NASA como identidade. A NASA é
+   creditada como fonte de dados e mídia, e o projeto se declara independente.
+
+10. A disponibilidade dos links do Space Apps deve ser confirmada pelos
+    organizadores antes da submissão. O briefing os registra, mas a validação
+    HTTP não deve ser confundida com a existência da fonte no produto.
+
+11. Não há áudio original da NASA no bundle. A opção de ouvir um capítulo usa
+    SpeechSynthesis do navegador e depende de suporte/idioma do dispositivo.
+
+12. O modelo do rover só é baixado na tela do artefato. Em conexões lentas ou
+    hospedagem sem o MIME correto para .glb, o fallback e o carregamento
+    progressivo precisam ser preservados.
+
+
+11. ANEXO — RESPOSTA PRONTA EM INGLÊS PARA A SUBMISSÃO
+======================================================
+
+Project description
+-------------------
+
+After the Signal is an interactive space museum for children aged approximately
+8–13, created by team ECHOES for the NASA Space Apps 2026 challenge “Abandoned
+but not Forgotten.” The experience lets children choose a world, travel toward
+it, examine a real artifact, take it apart in an educational way, read a short
+narrative, and reflect on what remains after a mission stops transmitting.
+
+What it does and how it works
+-----------------------------
+
+The main journey follows NASA's Opportunity rover on Mars. Visitors move
+through a 3D planetary approach, a real NASA traverse map, an official 3D rover
+model, three accessible hotspots, four short evidence-based chapters, a final
+real image, a comprehension question, and a legacy screen. The app also
+includes a Moon/Apollo 11 journey, an accessible linear archive mode, reduced
+motion support, keyboard navigation, captions/transcriptions, and fallbacks
+when WebGL or an asset is unavailable.
+
+Benefits
+--------
+
+After the Signal makes space exploration understandable through a concrete
+object: a rover that was planned for about 90 days and operated for more than
+14 years. It connects engineering, cartography, historical evidence, and
+scientific discovery. It also teaches media and data literacy by showing what
+is a real NASA photo, a real dataset, a scientific map, an educational
+reconstruction, or a team narration. The “What is real here?” panel makes
+provenance visible instead of hiding it.
+
+Intended impact
+---------------
+
+The intended impact is for children to leave knowing more than “the rover
+explored Mars.” They should understand that science turns a machine into
+lasting knowledge, that missions can end while their legacy continues, and
+that every claim should be traceable to evidence. The project aims to spark
+curiosity about engineering, astronomy, maps, and the history of exploration.
+
+Tools, languages, hardware, and software
+----------------------------------------
+
+The interface was built with React 19, TypeScript, Vite, Three.js,
+@react-three/fiber, @react-three/drei, Motion, Zustand, and CSS. The app is a
+static single-page application. No custom hardware is required: it runs in a
+modern browser on desktop or mobile, using WebGL when available and a
+text-preserving fallback when it is not. QA used Node.js, npm, Vitest, Testing
+Library, Playwright Core, axe-core Playwright, and Chrome. Voice narration uses
+the browser’s SpeechSynthesis and is optional.
+
+How the project is creative
+---------------------------
+
+The design treats a rover as a museum object in a quiet, nocturnal exhibition,
+with the visual signature “The signal ends. The light continues.” A child can
+travel from a planet to a real map, then to the artifact, then into an
+educational exploded view that separates the model’s material groups. The
+emotional hook is the last incomplete transmission, but the project deliberately
+rejects the fictional “last words” commonly attributed to Opportunity. Instead
+of inventing drama, it turns evidence into the emotional center.
+
+Factors considered by the team
+------------------------------
+
+The team considered scientific accuracy, provenance, child-friendly language,
+accessibility, reduced motion, keyboard navigation, screen size, loading
+performance, offline/static hosting, MIME configuration for 3D files, and
+honest fallbacks. It also considered licensing and attribution, avoided NASA
+branding as project identity, and clearly separated official assets from
+illustrative reconstructions. The team adopted a rule: if the model or data
+does not support a claim, label it as illustrative or omit it.
+
+How NASA data were important
+----------------------------
+
+NASA data were essential because they provide the project’s factual and visual
+backbone. NASA sources establish the mission timeline, the planned 90-sol
+duration, more than 14 years of operation, 45.16 km of travel, the June 10,
+2018 last contact, and the February 13, 2019 end of mission. NASA’s official
+rover GLB provides the real geometry visible in the artifact screen and
+educational teardown. NASA photographs provide the self-portrait, final
+panorama, last incomplete transmission, and hematite evidence. The Mars Viking
+MDIM 2.1 mosaic provides the cartographic texture used on the Mars sphere. NASA
+mission and instrument pages provide the explanations of the six wheels, solar
+panels, Pancam, Navcam, Hazard Cameras, APXS, Mössbauer spectrometer,
+microscopic imager, RAT, antennas, and rocker-bogie suspension. NASA’s Moon,
+Apollo 11, Artemis, and Lunar Module references support the second journey.
+Without these sources, the experience would look like a fictional space
+interface; with them, it becomes a verifiable museum about real equipment.
+
+Where NASA data are used
+------------------------
+
+- Mission facts and numbers: src/i18n/content.ts, src/content/opportunity.ts,
+  src/content/roverSchematic.ts, and the legacy/quiz screens.
+- Official Opportunity model: public/assets/artifacts/opportunity-rover.glb,
+  loaded by src/scenes/RoverViewer.tsx and used by
+  src/components/RoverTeardown.tsx.
+- Real map: public/assets/maps/opportunity-traverse-nasa.jpg, displayed in the
+  map/journey content from src/content/opportunity.ts.
+- Real images: public/assets/images/opportunity-selfie.jpg,
+  opportunity-final-panorama.jpg, opportunity-last-message.jpg, and
+  opportunity-hematite-berries.jpg.
+- Mars texture: public/assets/maps/mars-viking-mdim-color-2k.jpg and locally
+  derived normal/roughness files, used in src/scenes/NasaMarsSphere.tsx.
+- Lunar and Apollo content: src/i18n/content.ts and src/i18n/lunarTeardown.ts.
+- Public provenance: src/components/SourcesPanel.tsx.
+
+The NASA material is therefore not decorative. It determines what the child
+sees, what the interface claims, how the engineering is explained, and which
+parts of the story can be verified.
+
+
+12. CONCLUSÃO
+=============
+
+After the Signal usa dados da NASA como base de credibilidade científica,
+autenticidade visual e impacto educativo. O projeto não se limita a citar a
+NASA: ele organiza o modelo 3D, as imagens, o mapa, os fatos, os instrumentos e
+as fontes em uma experiência infantil verificável. O maior cuidado do projeto é
+ético e pedagógico: distinguir evidência de reconstrução, explicar limites e
+mostrar à criança de onde vem cada informação.
+
+Arquivo gerado para o workspace do projeto. Nenhum código-fonte foi alterado
+para produzir este relatório.
