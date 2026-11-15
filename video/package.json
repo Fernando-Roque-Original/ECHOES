@@ -1,0 +1,29 @@
+{
+  "name": "after-the-signal-film",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Animatic Remotion do filme de pitch After the Signal",
+  "type": "module",
+  "scripts": {
+    "prepare-assets": "node scripts/prepare-public-assets.mjs",
+    "export:srt": "node scripts/export-captions.mjs",
+    "dev": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts PitchFilm out/after-the-signal.mp4",
+    "still": "remotion still src/index.ts PitchFilm out/poster.png --frame=5100",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@remotion/cli": "^4.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  }
+}

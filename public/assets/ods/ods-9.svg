@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Objetivo de Desenvolvimento Sustentável 9: Indústria, inovação e infraestrutura</title>
+  <rect width="64" height="64" rx="10" fill="#f36d25"/>
+  <path d="M11 43V29l9 6V25l9 6V18h8v19l9-7v13H11Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M16 36h7M26 32v11M46 30v13M11 48h43" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2.4"/>
+  <circle cx="46" cy="17" r="6" fill="none" stroke="#fff" stroke-width="2.6"/>
+  <path d="M46 8.7v2.1M46 23.2v2.1M37.7 17h2.1M52.2 17h2.1M40.1 11.1l1.5 1.5M50.4 21.4l1.5 1.5M51.9 11.1l-1.5 1.5M41.6 21.4l-1.5 1.5" stroke="#fff" stroke-linecap="round" stroke-width="1.9"/>
+  <text x="51" y="55" fill="#fff" font-family="Arial, sans-serif" font-size="17" font-weight="700" text-anchor="middle">9</text>
+</svg>

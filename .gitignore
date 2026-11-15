@@ -1,0 +1,23 @@
+node_modules/
+dist/
+.vite/
+coverage/
+*.local
+.DS_Store
+
+# Local QA, browser profiles, analysis and transcripts
+.qa/
+.chrome-*/
+.analysis/
+.vitest/
+.nasa-*.html
+.qa-*.png
+$null
+l.includes(k))
+
+# Raw/private source media and duplicate submission exports
+/audio da reuniao.m4a
+/audio*.mp4
+/ideia 2.mp4
+/after-the-signal-final.mp4
+/after-the-signal-legendas-ptbr.srt

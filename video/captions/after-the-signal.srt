@@ -1,0 +1,139 @@
+1
+00:00:00,000 --> 00:00:05,333
+Toda criança já olhou para o céu.
+
+2
+00:00:05,333 --> 00:00:10,000
+Mas nem toda criança encontra uma porta para entrar nele.
+
+3
+00:00:10,000 --> 00:00:14,000
+Em 10 de junho de 2018, o último conjunto de dados do Opportunity chegou de Marte.
+
+4
+00:00:14,000 --> 00:00:18,000
+A missão terminou.
+
+5
+00:00:18,000 --> 00:00:20,000
+A história, não.
+
+6
+00:00:20,000 --> 00:00:26,000
+A NASA já produziu algumas das histórias mais extraordinárias da humanidade.
+
+7
+00:00:26,000 --> 00:00:31,000
+Mas elas vivem em arquivos técnicos, em inglês, feitos para especialistas.
+
+8
+00:00:31,000 --> 00:00:39,000
+Para muitas crianças, a ciência parece estar do outro lado de uma porta que ninguém abriu.
+
+9
+00:00:39,000 --> 00:00:45,000
+Não falta curiosidade. Falta acesso.
+
+10
+00:00:45,000 --> 00:00:52,000
+O After the Signal transforma o arquivo científico da NASA em uma experiência interativa.
+
+11
+00:00:52,000 --> 00:00:55,000
+Uma criança consegue explorar sozinha.
+
+12
+00:00:55,000 --> 00:01:00,000
+Você começa no sistema solar.
+
+13
+00:01:00,000 --> 00:01:05,000
+Marte e Lua estão abertos.
+
+14
+00:01:05,000 --> 00:01:10,000
+Escolha Marte.
+
+15
+00:01:10,000 --> 00:01:15,000
+Atravesse o espaço. E desça até o Opportunity.
+
+16
+00:01:15,000 --> 00:01:21,000
+Em 2004, o Opportunity pousou em Marte.
+
+17
+00:01:21,000 --> 00:01:25,000
+Planejada para cerca de 90 sols. Quase 92 dias terrestres.
+
+18
+00:01:25,000 --> 00:01:30,000
+Continuou por mais de 14 anos.
+
+19
+00:01:30,000 --> 00:01:35,000
+Percorreu 45,16 quilômetros.
+
+20
+00:01:35,000 --> 00:01:40,000
+As rodas contam uma jornada real.
+
+21
+00:01:40,000 --> 00:01:45,000
+As câmeras registraram a paisagem.
+
+22
+00:01:45,000 --> 00:01:50,000
+Em 10 de junho de 2018, sol 5111, o último conjunto de dados chegou.
+
+23
+00:01:50,000 --> 00:01:55,000
+Uma imagem incompleta e ruidosa, durante uma tempestade de poeira.
+
+24
+00:01:55,000 --> 00:02:00,000
+Não uma despedida. O Opportunity encontrou evidências de ambientes antigos com água.
+
+25
+00:02:00,000 --> 00:02:05,000
+Ela não está só vendo ciência. Está fazendo as perguntas que a ciência faz.
+
+26
+00:02:05,000 --> 00:02:10,000
+Uma história real pode ser o começo de um novo cientista.
+
+27
+00:02:10,000 --> 00:02:17,000
+Funciona no navegador, em português, para escolas públicas, professores e famílias.
+
+28
+00:02:17,000 --> 00:02:27,000
+Quando a curiosidade encontra acesso, a distância vira descoberta.
+
+29
+00:02:27,000 --> 00:02:35,000
+A Lua já está aberta.
+
+30
+00:02:35,000 --> 00:02:39,000
+Novos mundos podem continuar chegando.
+
+31
+00:02:39,000 --> 00:02:45,000
+90 sols planejados. Quase 92 dias terrestres.
+
+32
+00:02:45,000 --> 00:02:49,000
+Mais de 14 anos.
+
+33
+00:02:49,000 --> 00:02:52,000
+45,16 quilômetros.
+
+34
+00:02:52,000 --> 00:02:56,000
+A missão terminou. A descoberta ficou.
+
+35
+00:02:56,000 --> 00:03:00,000
+O sinal termina. A luz continua.
