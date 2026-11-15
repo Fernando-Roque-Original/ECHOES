@@ -5,7 +5,13 @@ import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDir, '..', '..');
-const outDir = path.resolve(projectRoot, 'video', 'public', 'reel', 'echos-en');
+const outDir = path.resolve(
+  projectRoot,
+  'video',
+  'public',
+  'reel',
+  process.env.ECHOS_REEL_DIR ?? 'echos-en-v2',
+);
 const baseUrl = process.env.ECHOS_URL ?? 'http://127.0.0.1:5173';
 const executablePath =
   process.env.CHROME_PATH ??
@@ -83,8 +89,20 @@ async function clickOrbitWorld(world) {
 }
 
 try {
-  await page.goto(baseUrl, { waitUntil: 'networkidle' });
+  await page.goto(baseUrl, {
+    waitUntil: 'domcontentloaded',
+    timeout: 60_000,
+  });
   await settle(page, 1600);
+  const openingTitle = (await page.locator('#cine-title').innerText())
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!/^Abandoned,\s*but not forgotten\.$/i.test(openingTitle)) {
+    throw new Error(
+      `Unexpected opening title "${openingTitle}". ` +
+        'Capture the current English UI before rendering the reel.',
+    );
+  }
   await page.screenshot({
     path: path.join(outDir, '01-opening.png'),
     timeout: 60_000,
@@ -141,7 +159,10 @@ try {
 
   // Deep links open the Moon journey directly. This is more deterministic than
   // returning to the orbit selector after the WebGL teardown capture.
-  await page.goto(`${baseUrl}/?world=moon`, { waitUntil: 'networkidle' });
+  await page.goto(`${baseUrl}/?world=moon`, {
+    waitUntil: 'domcontentloaded',
+    timeout: 60_000,
+  });
   await settle(page, 1800);
   await scrollSectionProgress('jornada-moon', 0.04);
   await shot('13-moon-hero');

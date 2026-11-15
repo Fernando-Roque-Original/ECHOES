@@ -22,7 +22,7 @@ import { ScienceLens } from './ScienceLens';
 import { WorldQuiz } from './WorldQuiz';
 
 export const DEFAULT_JOURNEY_BEAT_SPAN = 1;
-export const TEARDOWN_JOURNEY_BEAT_SPAN = 2.4;
+export const TEARDOWN_JOURNEY_BEAT_SPAN = 1.6;
 
 const MARS_GLOBE = {
   texture: '/assets/maps/mars-viking-mdim-color-2k.jpg',

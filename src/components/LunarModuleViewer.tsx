@@ -9,6 +9,11 @@ const MODEL_URL = '/assets/artifacts/apollo-lunar-module.glb';
 const NORMALIZED_SIZE = 3.8;
 const EXIT_HYSTERESIS_MS = 420;
 
+// Serve the Draco decoder from our own origin. The model is compressed with
+// KHR_draco_mesh_compression; relying on the Drei CDN leaves the viewer stuck
+// on its loading fallback when that external request is blocked or slow.
+useGLTF.setDecoderPath('/draco/');
+
 type LunarModuleViewerProps = {
   active: boolean;
   reducedMotion: boolean;
@@ -51,6 +56,14 @@ function ApolloModel({
 }) {
   const source = useGLTF(MODEL_URL).scene;
   const rig = useRef<THREE.Group>(null);
+
+  useEffect(() => {
+    document.documentElement.dataset.echoesApolloReady = 'true';
+    return () => {
+      delete document.documentElement.dataset.echoesApolloReady;
+    };
+  }, []);
+
   const normalized = useMemo(() => {
     const model = source.clone(true);
     const bounds = new THREE.Box3().setFromObject(model);
@@ -229,3 +242,5 @@ export function LunarModuleViewer({
     </div>
   );
 }
+
+useGLTF.preload(MODEL_URL);

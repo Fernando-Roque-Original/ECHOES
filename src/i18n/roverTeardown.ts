@@ -21,6 +21,8 @@ export type RoverTeardownCopy = {
     reducedMotionTourTitle: string;
     reassemble: string;
     openAll: string;
+    explore3d: string;
+    resumeJourney: string;
   };
   separation: {
     label: string;
@@ -59,6 +61,8 @@ export type RoverTeardownCopy = {
     tourPaused: string;
     tourStarted: string;
     allOpen: string;
+    exploreStarted: string;
+    exploreEnded: string;
     separation: (percent: number) => string;
   };
 };
@@ -76,6 +80,8 @@ export const roverTeardownCopy: Record<Locale, RoverTeardownCopy> = {
         'Tour automático desativado com movimento reduzido',
       reassemble: 'Reunir visualmente',
       openAll: 'Abrir tudo',
+      explore3d: 'Explorar em 3D',
+      resumeJourney: 'Voltar ao percurso',
     },
     separation: {
       label: 'Separação das camadas',
@@ -173,6 +179,9 @@ export const roverTeardownCopy: Record<Locale, RoverTeardownCopy> = {
       tourStarted:
         'Tour guiado iniciado. Cada camada recebe uma pausa.',
       allOpen: 'Todas as camadas separadas ao máximo.',
+      exploreStarted:
+        'Modo de exploração ativado. O percurso está pausado; arraste para orbitar o rover.',
+      exploreEnded: 'Exploração encerrada. Percurso retomado.',
       separation: (percent) => `Separação em ${percent} por cento.`,
     },
   },
@@ -188,6 +197,8 @@ export const roverTeardownCopy: Record<Locale, RoverTeardownCopy> = {
         'Automatic tour disabled with reduced motion',
       reassemble: 'Reunite visually',
       openAll: 'Open all',
+      explore3d: 'Explore in 3D',
+      resumeJourney: 'Resume journey',
     },
     separation: {
       label: 'Layer separation',
@@ -284,6 +295,9 @@ export const roverTeardownCopy: Record<Locale, RoverTeardownCopy> = {
       tourPaused: 'Guided tour paused.',
       tourStarted: 'Guided tour started. Each layer receives a pause.',
       allOpen: 'All layers separated to the maximum.',
+      exploreStarted:
+        'Explore mode enabled. The journey is paused; drag to orbit the rover.',
+      exploreEnded: 'Explore mode closed. Journey resumed.',
       separation: (percent) => `Layer separation: ${percent} percent.`,
     },
   },

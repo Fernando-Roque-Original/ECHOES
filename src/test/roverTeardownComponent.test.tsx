@@ -1,4 +1,10 @@
-import { act, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as THREE from 'three';
 
@@ -150,5 +156,37 @@ describe('RoverTeardown integration safeguards', () => {
     for (const button of within(layers).getAllByRole('button')) {
       expect(button).toBeDisabled();
     }
+  });
+
+  it('freezes the scroll timeline and enables exploration on demand', async () => {
+    render(<RoverTeardown reducedMotion={false} progress={0.52} />);
+
+    await screen.findByTestId('orbit-controls');
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Explorar em 3D' }),
+    );
+
+    expect(teardownMocks.orbitControlProps.at(-1)).toMatchObject({
+      enabled: true,
+      enableRotate: true,
+    });
+    expect(document.body.style.overflow).toBe('hidden');
+
+    const layers = screen.getByRole('group', {
+      name: 'Camadas de materiais do modelo',
+    });
+    for (const button of within(layers).getAllByRole('button')) {
+      expect(button).toBeEnabled();
+    }
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Voltar ao percurso' }),
+    );
+
+    expect(teardownMocks.orbitControlProps.at(-1)).toMatchObject({
+      enabled: false,
+      enableRotate: false,
+    });
+    expect(document.body.style.overflow).toBe('');
   });
 });

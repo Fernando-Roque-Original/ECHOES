@@ -1,14 +1,16 @@
 {
-  "name": "after-the-signal-film",
+  "name": "echos-film",
   "private": true,
   "version": "0.1.0",
-  "description": "Animatic Remotion do filme de pitch After the Signal",
+  "description": "Remotion presentation for ECHOES",
   "type": "module",
   "scripts": {
     "prepare-assets": "node scripts/prepare-public-assets.mjs",
     "export:srt": "node scripts/export-captions.mjs",
     "dev": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts PitchFilm out/after-the-signal.mp4",
+    "render:30": "remotion render src/index.ts Echos30En out/echos-abandoned-not-forgotten-30s-en.mp4",
+    "export:srt:30": "node scripts/export-echos30-captions.mjs",
     "still": "remotion still src/index.ts PitchFilm out/poster.png --frame=5100",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"

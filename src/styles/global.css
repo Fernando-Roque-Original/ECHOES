@@ -4885,6 +4885,29 @@ p {
   gap: 7px;
 }
 
+.teardown-explore-toggle {
+  border-color: rgba(154, 203, 212, 0.42);
+  color: var(--paper);
+}
+
+.rover-teardown.is-exploring .teardown-explore-toggle {
+  border-color: rgba(242, 194, 107, 0.68);
+  background: rgba(242, 194, 107, 0.12);
+}
+
+.rover-teardown.is-exploring .teardown-stage {
+  overscroll-behavior: contain;
+}
+
+.rover-teardown.is-exploring .teardown-canvas {
+  cursor: grab;
+  touch-action: none;
+}
+
+.rover-teardown.is-exploring .teardown-canvas:active {
+  cursor: grabbing;
+}
+
 .teardown-layers {
   display: flex;
   gap: 6px;

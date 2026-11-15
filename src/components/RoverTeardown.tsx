@@ -4,6 +4,7 @@ import {
   ArrowUpRight,
   Layers,
   Maximize2,
+  MousePointer2,
   Pause,
   Play,
   RotateCcw,
@@ -57,6 +58,8 @@ type TeardownAnnouncement =
   | { kind: 'tour-paused' }
   | { kind: 'tour-started' }
   | { kind: 'all-open' }
+  | { kind: 'explore-started' }
+  | { kind: 'explore-ended' }
   | { kind: 'separation'; percent: number };
 
 type RuntimeLayer = {
@@ -607,13 +610,15 @@ export default function RoverTeardown({
   const rawId = useId();
   const uid = rawId.replace(/:/g, '');
   const copy = getRoverTeardownCopy(locale);
-  const scrollDriven = progress !== undefined;
+  const [frozenProgress, setFrozenProgress] = useState<number | null>(null);
+  const scrollDriven = progress !== undefined && frozenProgress === null;
+  const timelineProgress = frozenProgress ?? progress;
   const timeline = useMemo(
     () =>
-      progress === undefined
+      timelineProgress === undefined
         ? null
-        : getTeardownTimelineState(progress),
-    [progress],
+        : getTeardownTimelineState(timelineProgress),
+    [timelineProgress],
   );
   const localizedLayers = useMemo(
     () =>
@@ -632,11 +637,15 @@ export default function RoverTeardown({
   const [keepModelMounted, setKeepModelMounted] = useState(false);
   const [announcement, setAnnouncement] =
     useState<TeardownAnnouncement>({ kind: 'initial' });
-  const effectiveSeparation = timeline?.separation ?? separation;
+  const effectiveSeparation = scrollDriven
+    ? timeline?.separation ?? separation
+    : separation;
   const displayedSeparation = Math.round(effectiveSeparation);
-  const effectiveSelectedId =
-    selectedId ?? timeline?.featuredLayerId ?? null;
+  const effectiveSelectedId = scrollDriven
+    ? selectedId ?? timeline?.featuredLayerId ?? null
+    : selectedId;
   const shouldMountModel = active || keepModelMounted;
+  const isExploring = frozenProgress !== null;
 
   const selectedLayer = useMemo(
     () =>
@@ -672,6 +681,37 @@ export default function RoverTeardown({
     setHoveredId(null);
     setTourRunning(false);
   }, [scrollDriven]);
+
+  useEffect(() => {
+    if (!isExploring) return;
+
+    const body = document.body;
+    const html = document.documentElement;
+    const previousBodyOverflow = body.style.overflow;
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyOverscroll = body.style.overscrollBehavior;
+    const scrollbarWidth = window.innerWidth - html.clientWidth;
+    const previousBodyPaddingRight = body.style.paddingRight;
+
+    body.style.overflow = 'hidden';
+    html.style.overflow = 'hidden';
+    body.style.overscrollBehavior = 'none';
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      body.style.overflow = previousBodyOverflow;
+      html.style.overflow = previousHtmlOverflow;
+      body.style.overscrollBehavior = previousBodyOverscroll;
+      body.style.paddingRight = previousBodyPaddingRight;
+    };
+  }, [isExploring]);
+
+  useEffect(() => {
+    if (active || frozenProgress === null) return;
+    setFrozenProgress(null);
+  }, [active, frozenProgress]);
 
   useEffect(() => {
     if (!tourRunning || reducedMotion || scrollDriven) return;
@@ -733,6 +773,26 @@ export default function RoverTeardown({
     setAnnouncement({ kind: 'all-open' });
   };
 
+  const toggleExploration = () => {
+    if (progress === undefined) return;
+
+    if (frozenProgress !== null) {
+      setFrozenProgress(null);
+      setSelectedId(null);
+      setHoveredId(null);
+      setTourRunning(false);
+      setAnnouncement({ kind: 'explore-ended' });
+      return;
+    }
+
+    setFrozenProgress(progress);
+    setSeparation(timeline?.separation ?? separation);
+    setSelectedId(null);
+    setHoveredId(null);
+    setTourRunning(false);
+    setAnnouncement({ kind: 'explore-started' });
+  };
+
   const currentLayer = hoveredLayer ?? selectedLayer;
   const announcementText = useMemo(() => {
     const layer =
@@ -761,6 +821,10 @@ export default function RoverTeardown({
         return copy.announcements.tourStarted;
       case 'all-open':
         return copy.announcements.allOpen;
+      case 'explore-started':
+        return copy.announcements.exploreStarted;
+      case 'explore-ended':
+        return copy.announcements.exploreEnded;
       case 'separation':
         return copy.announcements.separation(announcement.percent);
     }
@@ -771,6 +835,7 @@ export default function RoverTeardown({
       className={[
         'rover-teardown',
         scrollDriven ? 'is-scroll-driven' : '',
+        isExploring ? 'is-exploring' : '',
         tourRunning ? 'is-touring' : '',
         reducedMotion ? 'is-reduced-motion' : '',
         className ?? '',
@@ -788,6 +853,21 @@ export default function RoverTeardown({
           <p>{copy.intro}</p>
         </div>
         <div className="teardown-actions">
+          {progress !== undefined ? (
+            <button
+              className={`schematic-control teardown-explore-toggle ${
+                isExploring ? 'is-active' : ''
+              }`}
+              type="button"
+              onClick={toggleExploration}
+              aria-pressed={isExploring}
+            >
+              <MousePointer2 aria-hidden="true" size={16} />
+              {isExploring
+                ? copy.actions.resumeJourney
+                : copy.actions.explore3d}
+            </button>
+          ) : null}
           <button
             className={`schematic-control ${tourRunning ? 'is-active' : ''}`}
             type="button"
@@ -964,7 +1044,7 @@ export default function RoverTeardown({
                 alignItems: 'center',
                 justifyContent: 'center',
                 overflow: 'hidden',
-                opacity: timeline.schematicOpacity,
+                opacity: scrollDriven ? timeline.schematicOpacity : 0,
                 background:
                   'linear-gradient(180deg, rgba(0, 0, 0, 0.97), rgba(0, 0, 0, 0.9))',
                 pointerEvents: 'none',

@@ -119,14 +119,14 @@ describe('weighted scroll journey', () => {
     const layout = createJourneyBeatLayout(journey.beats);
 
     expect(DEFAULT_JOURNEY_BEAT_SPAN).toBe(1);
-    expect(TEARDOWN_JOURNEY_BEAT_SPAN).toBe(2.4);
-    expect(getJourneyBeatSpan({ visual: 'lunar-teardown' })).toBe(2.4);
+    expect(TEARDOWN_JOURNEY_BEAT_SPAN).toBe(1.6);
+    expect(getJourneyBeatSpan({ visual: 'lunar-teardown' })).toBe(1.6);
     expect(layout.ranges.map((range) => range.span)).toEqual([
       1,
-      2.4,
+      1.6,
       1,
     ]);
-    expect(layout.totalSpan).toBeCloseTo(4.4, 10);
+    expect(layout.totalSpan).toBeCloseTo(3.6, 10);
   });
 
   it('maps global progress onto weighted beat ranges', () => {
@@ -145,7 +145,7 @@ describe('weighted scroll journey', () => {
     ).toMatchObject({ index: 2 });
   });
 
-  it('gives the teardown 2.4x the scroll distance and progresses 0 to 1', () => {
+  it('gives the teardown 1.6x the scroll distance and progresses 0 to 1', () => {
     const layout = createJourneyBeatLayout(journey.beats);
     const teardown = layout.ranges[1];
 
@@ -198,7 +198,7 @@ describe('ScrollJourney teardown lifecycle', () => {
     const section = screen.getByRole('region', { name: 'Test journey' });
     const teardown = screen.getByTestId('rover-teardown');
 
-    expect(section.style.getPropertyValue('--journey-span')).toBe('4.4');
+    expect(section.style.getPropertyValue('--journey-span')).toBe('3.6');
     expect(teardown).toHaveAttribute('data-active', 'false');
     expect(Number(teardown.getAttribute('data-progress'))).toBe(1);
 
