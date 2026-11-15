@@ -90,6 +90,24 @@ describe('OrbitSelector', () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 
+  it('keeps each planet in a fixed lane while the active state changes', async () => {
+    const user = userEvent.setup();
+    renderSelector(CARD_REVEAL_PROGRESS + 0.25);
+
+    const mars = screen.getByRole('button', { name: 'Explorar 01 Marte' });
+    const moon = screen.getByRole('button', { name: 'Explorar 02 Lua' });
+
+    expect(mars).toHaveAttribute('data-slot', '0');
+    expect(moon).toHaveAttribute('data-slot', '1');
+
+    await user.hover(moon);
+
+    expect(mars).toHaveAttribute('data-slot', '0');
+    expect(moon).toHaveAttribute('data-slot', '1');
+    expect(mars).toHaveAttribute('aria-pressed', 'false');
+    expect(moon).toHaveAttribute('aria-pressed', 'true');
+  });
+
   it('selects Mars only when its card is activated', async () => {
     const user = userEvent.setup();
     const { onSelect } = renderSelector(CARD_REVEAL_PROGRESS);

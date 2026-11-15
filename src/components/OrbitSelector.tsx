@@ -155,10 +155,18 @@ export function OrbitSelector({
 
   const measuredWidth = deckWidth || 1080;
   const compact = measuredWidth < 620;
-  const cardWidth = compact
+  const cardGap = compact ? 16 : 24;
+  const idealCardWidth = compact
     ? clamp(measuredWidth * 0.29, 120, 142)
     : clamp(measuredWidth * 0.155, 168, 204);
-  const spacing = cardWidth * (compact ? 0.64 : 0.6);
+  // Keep both cards side by side even on narrow screens. The active state only
+  // changes depth and elevation, so hovering one card never makes the planets
+  // swap lanes or pass through each other.
+  const cardWidth = Math.min(
+    idealCardWidth,
+    Math.max(64, (measuredWidth - cardGap) / 2),
+  );
+  const spacing = cardWidth + cardGap;
 
   const activateIndex = (index: number, moveFocus = false) => {
     const nextIndex = clamp(index, 0, orbitWorlds.length - 1);
@@ -309,23 +317,30 @@ export function OrbitSelector({
           </span>
 
           {orbitWorlds.map(({ world, body }, index) => {
-            const offset = index - activeIndex;
-            const distance = Math.abs(offset);
-            const direction = Math.sign(offset);
-            const isActive = offset === 0;
+            const laneOffset =
+              index - (orbitWorlds.length - 1) / 2;
+            const laneDistance = Math.abs(laneOffset);
+            const isActive = index === activeIndex;
             const revealAmount = revealAmountFor(visualProgress, index);
-            const targetX =
-              offset * spacing +
-              direction * distance * distance * (compact ? 3.2 : 5.6);
-            const targetY = distance * distance * (compact ? 5 : 8);
-            const targetRotate = offset * (compact ? 7 : 9);
+            const targetX = laneOffset * spacing;
+            const targetY =
+              laneDistance * (compact ? 5 : 7) -
+              (isActive ? (compact ? 5 : 8) : 0);
+            const targetRotate = laneOffset * (compact ? 4 : 5);
             const targetScale = isActive
               ? compact
                 ? 1.02
                 : 1.025
               : compact
-                ? 0.84
-                : 0.85;
+                ? 0.94
+                : 0.95;
+            const targetZ = isActive
+              ? compact
+                ? 20
+                : 28
+              : compact
+                ? -8
+                : -12;
             const worldName = copy.planetNames[world];
             const worldNumber = String(index + 1).padStart(2, '0');
 
@@ -344,13 +359,16 @@ export function OrbitSelector({
                   .join(' ')}
                 type="button"
                 key={world}
+                data-slot={index}
+                data-active={isActive}
+                aria-pressed={isActive}
                 disabled={!revealed || !selectionEnabled}
                 aria-disabled={!revealed || !selectionEnabled}
                 style={
                   {
                     '--planet-texture': `url("${body.texture}")`,
                     width: cardWidth,
-                    zIndex: isActive ? 4 : 3 - distance,
+                    zIndex: isActive ? 4 : 3,
                     pointerEvents:
                       revealed && selectionEnabled ? 'auto' : 'none',
                     cursor: selectionEnabled ? 'pointer' : 'default',
@@ -359,21 +377,19 @@ export function OrbitSelector({
                 initial={false}
                 animate={{
                   x: mix(
-                    offset * (compact ? 4 : 7),
+                    laneOffset * (compact ? 4 : 7),
                     targetX,
                     revealAmount,
                   ),
                   y: mix(compact ? 62 : 78, targetY, revealAmount),
                   rotate: mix(
-                    offset * (compact ? 1.2 : 1.8),
+                    laneOffset * (compact ? 1.2 : 1.8),
                     targetRotate,
                     revealAmount,
                   ),
                   scale: mix(0.74, targetScale, revealAmount),
-                  opacity: revealAmount * (isActive ? 1 : 0.84),
-                  z: isActive
-                    ? mix(0, compact ? 20 : 28, revealAmount)
-                    : mix(0, compact ? -16 : -22, revealAmount),
+                  opacity: revealAmount * (isActive ? 1 : 0.9),
+                  z: mix(0, targetZ, revealAmount),
                 }}
                 transition={
                   reducedMotion
